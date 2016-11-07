@@ -1,7 +1,7 @@
 # Parameter Parser
 > **Parameter Parser** is a simple library used to parse intricate parameters from an array of strings.
 
-[More Code Examples](http://github.com/nathan-fiscaletti/parameterparser/)
+[More Code Examples](https://github.com/nathan-fiscaletti/parameterparser/blob/master/Examples.md)
 
 ```php
 // Create a new prefix cluster to use for parsing the arguments.
