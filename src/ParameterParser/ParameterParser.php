@@ -70,7 +70,7 @@ class ParameterParser
     /**
      * Check if the prefix is defined in the prefix cluster.
      *
-     * @param string $parameter 
+     * @param string $parameter
      *
      * @return bool
      */
@@ -91,7 +91,7 @@ class ParameterParser
     /**
      * Attempts to find the prefix associated with the parameter.
      * If no prefix is found, null will be returned.
-     * 
+     *
      * @param string $parameter
      *
      * @return string
