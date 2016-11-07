@@ -80,7 +80,7 @@ class ParameterParser
 
     /**
      * Sets the default closure.
-     * 
+     *
      * @param Closure $closure
      */
     public function setDefault(\Closure $closure)
