@@ -2,9 +2,11 @@
 
 namespace ParameterParser;
 
-class PrefixCluster {
+class PrefixCluster
+{
     /**
      * The prefixes and the closures associated therewith.
+     *
      * @var array
      */
     public $prefixes = [];
