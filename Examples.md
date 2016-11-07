@@ -43,9 +43,9 @@ $prefixes->setDefault(function ($parameter) {
 ### Example 2 : Using prefixes to parse more advanced parameters.
 
 #### Usage: 
-    php test.php -name Nathan +minify
+    php test.php -name 'Nathan Fiscaletti' +minify
 #### Output:
-    Name has been set to Nathan
+    Name has been set to Nathan Fiscaletti
     Minification has been enabled.
 #### Code:
 ```php
