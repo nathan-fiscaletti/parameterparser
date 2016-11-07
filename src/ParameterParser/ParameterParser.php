@@ -31,8 +31,62 @@ class ParameterParser
     }
 
     /**
+     * Parse the parameters.
+     *
+     * @return array
+     */
+    public function parse()
+    {
+        $results = [];
+
+        $i = 0;
+        while ($i < count($this->argv)) {
+            $parameter = $this->argv[$i];
+            if ($this->prefixExists($parameter)) {
+                $closure = $this->getClosure($parameter);
+                $prefix = $this->getPrefix($parameter);
+                $closure_arguments = [
+                    substr(
+                        $parameter,
+                        strlen($prefix),
+                        strlen($parameter) - strlen($prefix)
+                    ),
+                ];
+                $current_argument = 0;
+                $argument_count = count(
+                    (new \ReflectionFunction($closure))->getParameters()
+                ) - 1;
+                while ($current_argument < $argument_count) {
+                    $closure_arguments[] = $this->argv[$i + 1];
+                    $current_argument += 1;
+                    $i++;
+                }
+                $results[
+                    substr(
+                        $parameter,
+                        strlen($prefix),
+                        strlen($parameter) - strlen($prefix)
+                    )
+                ] = $closure(...$closure_arguments);
+                $i++;
+            } else {
+                $results[
+                    substr(
+                        $parameter,
+                        strlen($prefix),
+                        strlen($parameter) - strlen($prefix)
+                    )
+                ] = $this->prefixes->default->call($this, $parameter);
+                $i++;
+            }
+        }
+
+        return $results;
+    }
+
+    /**
      * Preloads the parameters and moves any parameters surrounded by
-     * single quotes to their own parameter.
+     * single or double quotes to their own parameter.
      *
      * @param  array $argv
      */
@@ -63,42 +117,6 @@ class ParameterParser
                 ' '.substr($argument_part, 0, strlen($argument_part) - 1);
             } else {
                 $this->argv[] = $argument;
-            }
-        }
-    }
-
-    /**
-     * Parse the parameters.
-     */
-    public function parse()
-    {
-        $i = 0;
-        while ($i < count($this->argv)) {
-            $parameter = $this->argv[$i];
-            if ($this->prefixExists($parameter)) {
-                $closure = $this->getClosure($parameter);
-                $prefix = $this->getPrefix($parameter);
-                $closure_arguments = [
-                    substr(
-                        $parameter,
-                        strlen($prefix),
-                        strlen($parameter) - strlen($prefix)
-                    ),
-                ];
-                $current_argument = 0;
-                $argument_count = count(
-                    (new \ReflectionFunction($closure))->getParameters()
-                ) - 1;
-                while ($current_argument < $argument_count) {
-                    $closure_arguments[] = $this->argv[$i + 1];
-                    $current_argument += 1;
-                    $i++;
-                }
-                $closure(...$closure_arguments);
-                $i++;
-            } else {
-                $this->prefixes->default->call($this, $parameter);
-                $i++;
             }
         }
     }

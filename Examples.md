@@ -42,10 +42,19 @@ $prefixes->setDefault(function ($parameter) {
 ### Example 2 : Using prefixes to parse more advanced parameters.
 
 #### Usage: 
-    php test.php -name 'Nathan Fiscaletti' +minify
+    php test.php -name "Nathan Fiscaletti" +minify --join 'foo bar' apples --invite 'Mr. Foo' 'Mr. Bar'
 #### Output:
-    Name has been set to Nathan Fiscaletti
-    Minification has been enabled.
+    Array
+    (
+        [name] => Nathan Fiscaletti
+        [minify] => 1
+        [join] => foo barapples
+        [invite] => Array
+            (
+                [0] => Mr. Foo
+                [1] => Mr. Bar
+            )
+    )
 #### Code:
 ```php
 // Create a new prefix cluster.
@@ -53,39 +62,56 @@ $prefixes = new \ParameterParser\PrefixCluster;
 
 // Create a new closure for the dash prefix.
 $dashPrefixClosure = function ($parameter, $value) {
-    switch($parameter) {
+    switch ($parameter) {
         case 'name' : {
-            echo 'Name has been set to ' . $value;
-            break;
+            return $value;
         }
 
         default : {
             echo 'Unknown parameter \'' . $parameter . '\'';
+            echo PHP_EOL;
         }
     }
+};
 
-    echo PHP_EOL;
+// Create a new closure for the double dash prefix.
+$doubleDashPrefixClosure = function ($parameter, $value1, $value2) {
+    switch ($parameter) {
+        case 'invite' : {
+            return [$value1, $value2];
+        }
+
+        case 'join' : {
+            return $value1.$value2;
+        }
+
+        default : {
+            echo 'Unknown parameter \'' . $parameter . '\'';
+            echo PHP_EOL;
+        }
+    }
 };
 
 // Create a new closure for the plus prefix.
 $plusPrefixClosure = function ($parameter) {
     switch ($parameter) {
         case 'minify' : {
-            echo 'Minification has been enabled.';
-            break;
+            return true;
         }
 
         default : {
             echo 'Unknown parameter \'' . $parameter . '\'';
+            echo PHP_EOL;
         }
     }
-
-    echo PHP_EOL;
 };
+
 
 // Apply the prefix closures and the prefixes to the prefix cluster.
 $prefixes->add('-', $dashPrefixClosure);
+$prefixes->add('--', $doubleDashPrefixClosure);
 $prefixes->add('+', $plusPrefixClosure);
+
 
 // Set a default closer for when no prefixes are found that match
 // the parameter being parsed. 
@@ -97,5 +123,7 @@ $prefixes->setDefault(function ($parameter) {
 });
 
 // Parse the arguments using the prefix cluster.
-(new \ParameterParser\ParameterParser($argv, $prefixes))->parse();
+$results = (new \ParameterParser\ParameterParser($argv, $prefixes))->parse();
+
+print_r($results);
 ```
