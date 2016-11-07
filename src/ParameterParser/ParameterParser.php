@@ -46,7 +46,7 @@ class ParameterParser
                 while (
                     ($argument_part = array_shift($argv)) != null &&
                     substr($argument_part, strlen($argument_part) - 1, 1) != '\''
-                ){
+                ) {
                     $this->argv[count($this->argv) - 1] .= ' '.$argument_part;
                 }
                 $this->argv[count($this->argv) - 1] .=
