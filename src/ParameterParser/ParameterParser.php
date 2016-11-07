@@ -42,9 +42,17 @@ class ParameterParser
             if ($this->prefixExists($parameter)) {
                 $closure = $this->getClosure($parameter);
                 $prefix = $this->getPrefix($parameter);
-                $closure_arguments = [substr($parameter, strlen($prefix), strlen($parameter) - strlen($prefix))];
+                $closure_arguments = [
+                    substr(
+                        $parameter,
+                        strlen($prefix),
+                        strlen($parameter) - strlen($prefix)
+                    )
+                ];
                 $current_argument = 0;
-                $argument_count = sizeof((new \ReflectionFunction($closure))->getParameters()) - 1;
+                $argument_count = sizeof(
+                    (new \ReflectionFunction($closure))->getParameters()
+                ) - 1;
                 while ($current_argument < $argument_count) {
                     $closure_arguments[] = $this->argv[$i + 1];
                     $current_argument += 1;
