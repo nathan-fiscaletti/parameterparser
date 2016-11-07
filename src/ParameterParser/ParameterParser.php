@@ -48,7 +48,11 @@ class ParameterParser
                     ),
                 ];
                 $i++;
-                while (isset($this->argv[$i]) && ($argument = $this->argv[$i]) != null && !$this->prefixExists($argument)) {
+                while (
+                    isset($this->argv[$i]) &&
+                    ($argument = $this->argv[$i]) != null &&
+                    ! $this->prefixExists($argument)
+                ) {
                     $closure_arguments[] = $argument;
                     $i++;
                 }
