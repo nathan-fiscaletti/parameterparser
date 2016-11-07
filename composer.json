@@ -1,12 +1,15 @@
 {
     "name": "nafisc/parameterparser",
     "description": "A library for parsing strings of parameters",
+    "homepage": "http://github.com/nathan-fiscaleti/parameterparser",
+    "keywords": ["cli", "parameter", "parser", "command", "line"],
     "type": "Library",
     "license": "MIT",
     "authors": [
         {
             "name": "Nathan Fiscaletti",
-            "email": "nathan.fiscaletti@stackpath.com"
+            "email": "nathan.fiscaletti@stackpath.com",
+            "role": "Lead Developer"
         }
     ],
     "autoload": {
@@ -14,5 +17,7 @@
             "ParameterParser\\": "src/ParameterParser"
         }
     },
-    "require": {}
+    "require": {
+        "php": ">=7.0"
+    }
 }
