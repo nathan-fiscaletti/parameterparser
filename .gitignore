@@ -1,2 +1,4 @@
 vendor/
 Examples.txt
+composer.lock
+test.php
