@@ -12,7 +12,7 @@ class PrefixCluster
     public $prefixes = [];
 
     /**
-     * The default closure to fall back on when no prefix is found 
+     * The default closure to fall back on when no prefix is found
      * for the argument being parsed.
      *
      * @var Closure
@@ -20,13 +20,13 @@ class PrefixCluster
     public $default = null;
 
     /**
-     * Construct the Prefix Cluster and assign a default value to the 
+     * Construct the Prefix Cluster and assign a default value to the
      * fall back closure.
      */
     public function __construct()
     {
         $this->default = function ($parameter) {
-            trigger_error('Unknown parameter \'' . $parameter . '\'', E_USER_WARNING);
+            trigger_error('Unknown parameter \''.$parameter.'\'', E_USER_WARNING);
         };
     }
 
@@ -43,7 +43,7 @@ class PrefixCluster
 
     /**
      * Remove a prefix and closure based on prefix.
-     * 
+     *
      * @param  string $prefix
      */
     public function remove($prefix)
@@ -53,7 +53,7 @@ class PrefixCluster
 
     /**
      * Add an array of prefixes and closures.
-     * 
+     *
      * @param array $prefixes
      */
     public function addMany($prefixes)
@@ -63,7 +63,7 @@ class PrefixCluster
 
     /**
      * Set the default fall back closure.
-     * 
+     *
      * @param Closure $closure
      */
     public function setDefault($closure)
