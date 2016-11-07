@@ -75,7 +75,7 @@ $dashPrefixClosure = function ($parameter, $value) {
 // Create a new closure for the double dash prefix.
 // Note: You cannot use the splat operator if you are using
 // the ->parse() function. Please see 'Example 3' for information
-// on using the spalt operator to extend the functionality of closures.
+// on using the splat operator to extend the functionality of closures.
 $doubleDashPrefixClosure = function ($parameter, $value1, $value2) {
     switch ($parameter) {
         case 'invite' : {
@@ -167,7 +167,7 @@ print_r($results);
 // Create a new prefix cluster.
 $prefixes = new \ParameterParser\PrefixCluster;
 
-// Create a new closure for the dash prefix using the spalt operator (...)
+// Create a new closure for the dash prefix using the splat operator (...)
 // This will allow our closure to take all parameters between this prefix
 // and the next prefix in the parameter list.
 $dashPrefixClosure = function ($parameter, ...$values) {
