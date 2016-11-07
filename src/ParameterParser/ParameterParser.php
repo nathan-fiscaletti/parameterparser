@@ -26,9 +26,35 @@ class ParameterParser
      */
     public function __construct($argv, PrefixCluster $prefixes = null)
     {
-        $this->argv = $argv;
+        $this->preloadParameters($argv);
         $this->prefixes = ($prefixes == null) ? new PrefixCluster() : $prefixes;
-        array_shift($this->argv);
+    }
+
+    /**
+     * Preloads the parameters and moves any parameters surrounded by
+     * single quotes to their own parameter.
+     *
+     * @param  array $argv
+     */
+    private function preloadParameters($argv)
+    {
+        array_shift($argv);
+        $this->argv = [];
+        while (($argument = array_shift($argv)) != null) {
+            if (substr($argument, 0, 1) == '\'') {
+                $this->argv[] = substr($argument, 1);
+                while (
+                    ($argument_part = array_shift($argv)) != null && 
+                    substr($argument_part, strlen($argument_part) - 1, 1) != '\''
+                ){
+                    $this->argv[count($this->argv) - 1] .= ' '.$argument_part; 
+                }
+                $this->argv[count($this->argv) - 1] .=
+                ' '.substr($argument_part, 0, strlen($argument_part) - 1); 
+            } else {
+                $this->argv[] = $argument;
+            }
+        }
     }
 
     /**
