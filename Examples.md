@@ -1,5 +1,4 @@
-## Examples
-
+----
 ### Example 1 : Using the Parameter Parser to parse simple parameters.
 
 #### Usage: 
@@ -39,7 +38,7 @@ $prefixes->setDefault(function ($parameter) {
 // Parse the parameters using the parameter parser.
 (new \ParameterParser\ParameterParser($argv, $prefixes))->parse();
 ```
-
+----
 ### Example 2 : Using prefixes to parse more advanced parameters.
 
 #### Usage: 
