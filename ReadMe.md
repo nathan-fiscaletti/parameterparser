@@ -10,14 +10,12 @@
 [More Code Examples](https://github.com/nathan-fiscaletti/parameterparser/blob/master/Examples.md)
 
 ```php
-// Create a new prefix cluster to use for parsing the arguments.
-// We will only be using the default closure of the cluster
-// for this example.
-$prefixes = new \ParameterParser\PrefixCluster;
+// Create a new parameter parser using the default PHP arguments.
+$parameterParser = new \ParameterParser\ParameterParser($argv);
 
-// Set the default closure of the prefix cluster.
+// Set the default closure of ParameterParser
 // In this example, we will just have two parameters that can be set.
-$prefixes->setDefault(function ($parameter) {
+$parameterParser->setDefault(function ($parameter) {
     switch($parameter) {
         case 'color' : {
             echo 'Color has been enabled.';
@@ -38,5 +36,5 @@ $prefixes->setDefault(function ($parameter) {
 });
 
 // Parse the parameters using the parameter parser.
-(new \ParameterParser\ParameterParser($argv, $prefixes))->parse();
+$parameterParser->parse();
 ```

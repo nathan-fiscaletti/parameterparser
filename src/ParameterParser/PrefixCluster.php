@@ -36,7 +36,7 @@ class PrefixCluster
      * @param string $prefix
      * @param Closure $closure
      */
-    public function add($prefix, $closure)
+    public function add($prefix, \Closure $closure)
     {
         $this->prefixes[$prefix] = $closure;
     }
@@ -66,7 +66,7 @@ class PrefixCluster
      *
      * @param Closure $closure
      */
-    public function setDefault($closure)
+    public function setDefault(\Closure $closure)
     {
         $this->default = $closure;
     }

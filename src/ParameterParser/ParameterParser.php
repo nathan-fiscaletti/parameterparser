@@ -70,18 +70,22 @@ class ParameterParser
                 ] = $closure(...$closure_arguments);
                 $i++;
             } else {
-                $results[
-                    substr(
-                        $parameter,
-                        strlen($prefix),
-                        strlen($parameter) - strlen($prefix)
-                    )
-                ] = $this->prefixes->default->call($this, $parameter);
+                $results['default'] = $this->prefixes->default->call($this, $parameter);
                 $i++;
             }
         }
 
         return $results;
+    }
+
+    /**
+     * Sets the default closure.
+     * 
+     * @param Closure $closure
+     */
+    public function setDefault(\Closure $closure)
+    {
+        $this->prefixes->setDefault($closure);
     }
 
     /**
@@ -170,7 +174,7 @@ class ParameterParser
      *
      * @return Closure
      */
-    private function getClosure($parameter)
+    private function getClosure($parameter): \Closure
     {
         $closure = null;
 
