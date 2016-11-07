@@ -51,6 +51,16 @@ class ParameterParser
                 }
                 $this->argv[count($this->argv) - 1] .=
                 ' '.substr($argument_part, 0, strlen($argument_part) - 1);
+            } else if (substr($argument, 0, 1) == '"') {
+                $this->argv[] = substr($argument, 1);
+                while (
+                    ($argument_part = array_shift($argv)) != null &&
+                    substr($argument_part, strlen($argument_part) - 1, 1) != '"'
+                ) {
+                    $this->argv[count($this->argv) - 1] .= ' '.$argument_part;
+                }
+                $this->argv[count($this->argv) - 1] .=
+                ' '.substr($argument_part, 0, strlen($argument_part) - 1);
             } else {
                 $this->argv[] = $argument;
             }
