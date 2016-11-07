@@ -8,14 +8,12 @@
     Color has been enabled.
 #### Code:
 ```php
-// Create a new prefix cluster to use for parsing the arguments.
-// We will only be using the default closure of the cluster
-// for this example.
-$prefixes = new \ParameterParser\PrefixCluster;
+// Create a new parameter parser using the default PHP arguments.
+$parameterParser = new \ParameterParser\ParameterParser($argv);
 
-// Set the default closure of the prefix cluster.
+// Set the default closure of ParameterParser
 // In this example, we will just have two parameters that can be set.
-$prefixes->setDefault(function ($parameter) {
+$parameterParser->setDefault(function ($parameter) {
     switch($parameter) {
         case 'color' : {
             echo 'Color has been enabled.';
@@ -36,10 +34,10 @@ $prefixes->setDefault(function ($parameter) {
 });
 
 // Parse the parameters using the parameter parser.
-(new \ParameterParser\ParameterParser($argv, $prefixes))->parse();
+$parameterParser->parse();
 ```
 ----
-### Example 2 : Using prefixes to parse more advanced parameters.
+### Example 2 : Using PrefixCluster to parse more advanced parameters.
 
 #### Usage: 
     php test.php -name "Nathan Fiscaletti" +minify --join 'foo bar' apples --invite 'Mr. Foo' 'Mr. Bar'
@@ -118,6 +116,14 @@ $prefixes->add('+', $plusPrefixClosure);
 // 
 // This could be used to toggle certain things on or off, etc.
 // In this example, we'll just output an error.
+// 
+// Note: When using PrefixCluster you cannot use the setDefault()
+// function of ParameterParser unless you execute the parse() function
+// after initializing the ParameterParser with the PrefixCluster.
+// 
+// This is because the setDefault function of ParameterParser simply
+// forwards the closure parameter to the setDefault function of the
+// PrefixCluster property of the ParameterParser.
 $prefixes->setDefault(function ($parameter) {
     echo 'Unknown parameter \'' . $parameter .'\'' . PHP_EOL;
 });
