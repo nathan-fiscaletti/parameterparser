@@ -30,6 +30,44 @@ class ParameterParser
         $this->prefixes = ($prefixes == null) ? new PrefixCluster() : $prefixes;
     }
 
+    public function parsePrefixOnly()
+    {
+        $results = [];
+
+        $i = 0;
+        while ($i < count($this->argv)) {
+            $parameter = $this->argv[$i];
+            if ($this->prefixExists($parameter)) {
+                $closure = $this->getClosure($parameter);
+                $prefix = $this->getPrefix($parameter);
+                $closure_arguments = [
+                    substr(
+                        $parameter,
+                        strlen($prefix),
+                        strlen($parameter) - strlen($prefix)
+                    ),
+                ];
+                $i++;
+                while (isset($this->argv[$i]) && ($argument = $this->argv[$i]) != null && !$this->prefixExists($argument)) {
+                    $closure_arguments[] = $argument;
+                    $i++;
+                }
+                $results[
+                    substr(
+                        $parameter,
+                        strlen($prefix),
+                        strlen($parameter) - strlen($prefix)
+                    )
+                ] = $closure(...$closure_arguments);
+            } else {
+                $results['default'] = $this->prefixes->default->call($this, $parameter);
+                $i++;
+            }
+        }
+
+        return $results;
+    }
+
     /**
      * Parse the parameters.
      *
