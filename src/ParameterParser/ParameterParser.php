@@ -21,13 +21,13 @@ class ParameterParser
     /**
      * Construct the Parameter Parser using an array of arguments.
      *
-     * @param array           $argv
-     * @param PrefixCluster   $prefixes
+     * @param array         $argv
+     * @param PrefixCluster $prefixes
      */
     public function __construct($argv, PrefixCluster $prefixes = null)
     {
         $this->argv = $argv;
-        $this->prefixes = ($prefixes == null) ? new PrefixCluster : $prefixes;
+        $this->prefixes = ($prefixes == null) ? new PrefixCluster() : $prefixes;
         array_shift($this->argv);
     }
 
@@ -37,7 +37,7 @@ class ParameterParser
     public function parse()
     {
         $i = 0;
-        while ($i < sizeof($this->argv)) {
+        while ($i < count($this->argv)) {
             $parameter = $this->argv[$i];
             if ($this->prefixExists($parameter)) {
                 $closure = $this->getClosure($parameter);
@@ -47,10 +47,10 @@ class ParameterParser
                         $parameter,
                         strlen($prefix),
                         strlen($parameter) - strlen($prefix)
-                    )
+                    ),
                 ];
                 $current_argument = 0;
-                $argument_count = sizeof(
+                $argument_count = count(
                     (new \ReflectionFunction($closure))->getParameters()
                 ) - 1;
                 while ($current_argument < $argument_count) {
@@ -63,14 +63,15 @@ class ParameterParser
             } else {
                 $this->prefixes->default->call($this, $parameter);
                 $i++;
-            }               
+            }
         }
     }
 
     /**
      * Check if the prefix is defined in the prefix cluster.
      *
-     * @param  string $parameter 
+     * @param string $parameter 
+     *
      * @return bool
      */
     private function prefixExists($parameter)
@@ -91,7 +92,8 @@ class ParameterParser
      * Attempts to find the prefix associated with the parameter.
      * If no prefix is found, null will be returned.
      * 
-     * @param  string $parameter
+     * @param string $parameter
+     *
      * @return string
      */
     private function getPrefix($parameter)
@@ -102,6 +104,7 @@ class ParameterParser
                 $prefix = $_prefix;
             }
         }
+
         return $prefix;
     }
 
@@ -109,7 +112,8 @@ class ParameterParser
      * Attempts to find the closure associated with the parameter
      * based on prefix. If no prefix is found, null will be returned.
      *
-     * @param  string $parameter
+     * @param string $parameter
+     *
      * @return Closure
      */
     private function getClosure($parameter)
