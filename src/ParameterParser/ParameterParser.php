@@ -30,6 +30,12 @@ class ParameterParser
         $this->prefixes = ($prefixes == null) ? new PrefixCluster() : $prefixes;
     }
 
+    /**
+     * Parse the parameters counting any parameter that's not prefixed as an
+     * argument for the last prefixed parameter.
+     *
+     * @return array
+     */
     public function parsePrefixOnly()
     {
         $results = [];
