@@ -141,7 +141,7 @@ $results = (new \ParameterParser\ParameterParser($argv, $prefixes))->parse();
 print_r($results);
 ```
 ----
-### Example 3 : Using PrefixCluster and the splat operator `...`.
+### Example 3 : Using PrefixCluster and the splat operator `...`
 
 #### Usage: 
     php test.php -load 'Main Library.so' File2.so +configurewith 'Main Library.so' -exec 'Pre Load.sh' Initialize.sh start.sh
@@ -189,7 +189,7 @@ $dashPrefixClosure = function ($parameter, ...$values) {
     }
 };
 
-// Create a closure with regular parameters and no splate operator (...)
+// Create a closure with regular parameters and no splat operator (...)
 // This will make any parameter passed to this prefix closure only take
 // the next parameter as an argument, and not care where the next 
 // prefix is in the list of arguments.
