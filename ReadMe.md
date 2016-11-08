@@ -10,31 +10,20 @@
 [Advanced Code Examples](https://github.com/nathan-fiscaletti/parameterparser/blob/master/Examples.md)
 
 ```php
-// Create a new parameter parser using the default PHP arguments.
-$parameterParser = new \ParameterParser\ParameterParser($argv);
+// Initialize a new ParameterCluster
+$parameters = new ParameterCluster();
 
-// Set the default closure of ParameterParser
-// In this example, we will just have two parameters that can be set.
-$parameterParser->setDefault(function ($parameter) {
-    switch($parameter) {
-        case 'color' : {
-            echo 'Color has been enabled.';
-            break;
-        }
+// Add a ParameterClosure to the ParameterCluster
+$parameters->add('-', new ParameterClosure('name', function ($name) {
+    echo 'Your name is ' . $name . PHP_EOL;
+    return $name;
+}));
 
-        case 'silent' : {
-            echo 'Silent mode has been enabled.';
-            break;
-        }
+// Create a new parameter parser using the ParameterCluster
+$parameterParser = new ParameterParser($argv, $parameters);
 
-        default : {
-            echo 'Unknown parameter \'' . $parameter . '\'';
-        }
-    }
+// Parse the parameters using the ParameterParser.
+$results = $parameterParser->parse();
 
-    echo PHP_EOL;
-});
-
-// Parse the parameters using the parameter parser.
-$parameterParser->parse();
+$name = $results['name'];
 ```
