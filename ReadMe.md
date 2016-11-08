@@ -7,7 +7,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/nafisc/parameterparser/v/unstable?format=flat)](https://packagist.org/packages/nafisc/parameterparser)
 [![License](https://poser.pugx.org/nafisc/parameterparser/license?format=flat)](https://packagist.org/packages/nafisc/parameterparser)
 
-[More Code Examples](https://github.com/nathan-fiscaletti/parameterparser/blob/master/Examples.md)
+[Advanced Code Examples](https://github.com/nathan-fiscaletti/parameterparser/blob/master/Examples.md)
 
 ```php
 // Create a new parameter parser using the default PHP arguments.
