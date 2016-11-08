@@ -2,8 +2,8 @@
 
 namespace ParameterParser;
 
-use \ReflectionFunction;
-use \Closure;
+use ReflectionFunction;
+use Closure;
 
 class ParameterParser
 {
