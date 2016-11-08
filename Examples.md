@@ -141,10 +141,10 @@ $results = (new \ParameterParser\ParameterParser($argv, $prefixes))->parse();
 print_r($results);
 ```
 ----
-### Example 3 : Using PrefixCluster and parsePrefixOnly() function with splat operator.
+### Example 3 : Using PrefixCluster and the splat operator (...).
 
 #### Usage: 
-    php test.php -load 'Main Library.so' File2.so -exec 'Pre Load.sh' Initialize.sh start.sh
+    php test.php -load 'Main Library.so' File2.so +configurewith 'Main Library.so' -exec 'Pre Load.sh' Initialize.sh start.sh
 #### Output:
     Array
     (
@@ -153,6 +153,8 @@ print_r($results);
                 [0] => Main Library.so
                 [1] => File2.so
             )
+
+        [configurewith] => Main Library.so
 
         [exec] => Array
             (
@@ -187,10 +189,28 @@ $dashPrefixClosure = function ($parameter, ...$values) {
     }
 };
 
+// Create a closure with regular parameters and no splate operator (...)
+// This will make any parameter passed to this prefix closure only take
+// the next parameter as an argument, and not care where the next 
+// prefix is in the list of arguments.
+$plusPrefixClosure = function ($parameter, $value)
+{
+    switch ($parameter) {
+        case 'configurewith' : {
+            return $value;
+        }
+
+        default : {
+            echo 'Unknown parameter \'' . $parameter . '\'';
+            echo PHP_EOL;
+        }
+    }
+};
+
 
 // Apply the prefix closures and the prefixes to the prefix cluster.
 $prefixes->add('-', $dashPrefixClosure);
-
+$prefixes->add('+', $plusPrefixClosure);
 
 // Set a default closer for when no prefixes are found that match
 // the parameter being parsed. 
@@ -198,7 +218,7 @@ $prefixes->add('-', $dashPrefixClosure);
 // This could be used to toggle certain things on or off, etc.
 // In this example, we'll just output an error.
 // 
-// Note: When using PrefixCluster you cannot use the setDefault()
+// Note: When using a PrefixCluster you cannot use the setDefault()
 // function of ParameterParser unless you execute the parse() function
 // after initializing the ParameterParser with the PrefixCluster.
 // 
@@ -210,12 +230,7 @@ $prefixes->setDefault(function ($parameter) {
 });
 
 // Parse the arguments using the prefix cluster.
-// 
-// Note: Since we are using the parsePrefixOnly() function instead of parse() all
-// prefix closures can use the splat operator to define as many parameters
-// as you'd like. The parser will take all arguments before the next prefix
-// and pass them as parameters to your closure.
-$results = (new \ParameterParser\ParameterParser($argv, $prefixes))->parsePrefixOnly();
+$results = (new \ParameterParser\ParameterParser($argv, $prefixes))->parse();
 
 print_r($results);
 ```
