@@ -169,7 +169,7 @@ print_r($results);
 // Create a new prefix cluster.
 $prefixes = new \ParameterParser\PrefixCluster;
 
-// Create a new closure for the dash prefix using the splat operator (...)
+// Create a new variadic closure for the dash prefix using the splat operator (...)
 // This will allow our closure to take all parameters between this prefix
 // and the next prefix in the parameter list.
 $dashPrefixClosure = function ($parameter, ...$values) {
