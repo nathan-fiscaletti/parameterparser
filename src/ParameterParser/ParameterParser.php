@@ -56,7 +56,6 @@ class ParameterParser
                 if ($rFunction->isVariadic()) {
                     $this->parseVariadicPrefix(
                         $i,
-                        $argument,
                         $results,
                         $closure,
                         $closure_arguments,
@@ -66,7 +65,6 @@ class ParameterParser
                 } else {
                     $this->parseNonVariadicPrefix(
                         $i,
-                        $argument,
                         $results,
                         $closure,
                         $closure_arguments,
@@ -110,10 +108,12 @@ class ParameterParser
             switch (substr($argument, 0, 1)) {
                 case '\'': {
                     $this->parseQuote($argv, $argument, '\'');
+                    break;
                 }
 
                 case '"': {
                     $this->parseQuote($argv, $argument, '"');
+                    break;
                 }
 
                 default: {
@@ -165,7 +165,6 @@ class ParameterParser
      * parameter parser.
      *
      * @param  int                &$i
-     * @param  string             $argument
      * @param  array              &$results
      * @param  Closure            $closure
      * @param  array              &$closure_arguments
@@ -175,7 +174,6 @@ class ParameterParser
      */
     private function parseNonVariadicPrefix(
         &$i,
-        $argument,
         &$results,
         $closure,
         &$closure_arguments,
@@ -206,7 +204,6 @@ class ParameterParser
      * parameter parser.
      *
      * @param  int                &$i
-     * @param  string             $argument
      * @param  array              &$results
      * @param  Closure            $closure
      * @param  array              &$closure_arguments
@@ -215,7 +212,6 @@ class ParameterParser
      */
     private function parseVariadicPrefix(
         &$i,
-        $argument,
         &$results,
         $closure,
         &$closure_arguments,
