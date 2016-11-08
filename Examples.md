@@ -141,7 +141,7 @@ $results = (new \ParameterParser\ParameterParser($argv, $prefixes))->parse();
 print_r($results);
 ```
 ----
-### Example 3 : Using PrefixCluster and the splat operator (...).
+### Example 3 : Using PrefixCluster and the splat operator `...`.
 
 #### Usage: 
     php test.php -load 'Main Library.so' File2.so +configurewith 'Main Library.so' -exec 'Pre Load.sh' Initialize.sh start.sh
