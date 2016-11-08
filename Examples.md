@@ -152,7 +152,7 @@ $execClosure = new ParameterClosure('exec', function (...$arguments) {
 });
 
 // Create a new uniadic closure with regular parameter.
-// This will make any parameter passed to this prefix closure only take
+// This will make any parameter passed to the associated closure only take
 // the next parameter (or the next few, depending on the number of arguments
 // in the closure definition) as (an) argument(s), and not care where the next 
 // prefix is in the list of arguments.
