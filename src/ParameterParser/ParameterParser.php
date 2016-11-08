@@ -54,38 +54,9 @@ class ParameterParser
                 ];
                 $rFunction = new \ReflectionFunction($closure);
                 if ($rFunction->isVariadic()) {
-                    $i++;
-                    while (
-                        isset($this->argv[$i]) &&
-                        ($argument = $this->argv[$i]) != null &&
-                        ! $this->prefixExists($argument)
-                    ) {
-                        $closure_arguments[] = $argument;
-                        $i++;
-                    }
-                    $results[
-                        substr(
-                            $parameter,
-                            strlen($prefix),
-                            strlen($parameter) - strlen($prefix)
-                        )
-                    ] = $closure(...$closure_arguments);
+                    $this->parseVariadicPrefix($i, $argument, $results, $closure, $closure_arguments, $prefix, $parameter);
                 } else {
-                    $current_argument = 0;
-                    $argument_count = count($rFunction->getParameters()) - 1;
-                    while ($current_argument < $argument_count) {
-                        $closure_arguments[] = $this->argv[$i + 1];
-                        $current_argument += 1;
-                        $i++;
-                    }
-                    $results[
-                        substr(
-                            $parameter,
-                            strlen($prefix),
-                            strlen($parameter) - strlen($prefix)
-                        )
-                    ] = $closure(...$closure_arguments);
-                    $i++;
+                   $this->parseNonVariadicPrefix($i, $argument, $results, $closure, $closure_arguments, $prefix, $parameter, $rFunction);
                 }
             } else {
                 $results['default'] = $this->prefixes->default->call(
@@ -119,38 +90,128 @@ class ParameterParser
         array_shift($argv);
         $this->argv = [];
         while (($argument = array_shift($argv)) != null) {
-            if (substr($argument, 0, 1) == '\'') {
-                if (substr($argument, strlen($argument) - 1, 1) !== '\'') {
-                    $this->argv[] = substr($argument, 1);
-                    while (
-                        ($argument_part = array_shift($argv)) != null &&
-                        substr($argument_part, strlen($argument_part) - 1, 1) != '\''
-                    ) {
-                        $this->argv[count($this->argv) - 1] .= ' '.$argument_part;
-                    }
-                    $this->argv[count($this->argv) - 1] .=
-                    ' '.substr($argument_part, 0, strlen($argument_part) - 1);
-                } else {
-                    $this->argv[] = substr(substr($argument, 1), 0, strlen($argument) - 2);
+            switch (substr($argument, 0, 1)) {
+                case '\'' : {
+                    $this->parseQuote($argv, $argument, '\'');    
                 }
-            } elseif (substr($argument, 0, 1) == '"') {
-                if (substr($argument, strlen($argument) - 1, 1) !== '\'') {
-                    $this->argv[] = substr($argument, 1);
-                    while (
-                        ($argument_part = array_shift($argv)) != null &&
-                        substr($argument_part, strlen($argument_part) - 1, 1) != '"'
-                    ) {
-                        $this->argv[count($this->argv) - 1] .= ' '.$argument_part;
-                    }
-                    $this->argv[count($this->argv) - 1] .=
-                    ' '.substr($argument_part, 0, strlen($argument_part) - 1);
-                } else {
-                    $this->argv[] = substr(substr($argument, 1), 0, strlen($argument) - 2);
+
+                case '"' : {
+                    $this->parseQuote($argv, $argument, '"');    
                 }
-            } else {
-                $this->argv[] = $argument;
+
+                default : {
+                    $this->argv[] = $argument;    
+                }
             }
         }
+    }
+
+    /**
+     * Parse all parameters between two matching single or double quotes 
+     * to a single element in the parameter array.
+     *
+     * @param  array  &$argv
+     * @param  string $argument
+     * @param  string $quoteType
+     */
+    private function parseQuote(&$argv, $argument, $quoteType)
+    {
+        if (substr($argument, strlen($argument) - 1, 1) !== $quoteType) {
+            $this->argv[] = substr($argument, 1);
+            while (
+                ($argument_part = array_shift($argv)) != null &&
+                substr($argument_part, strlen($argument_part) - 1, 1) !== $quoteType
+            ) {
+                $this->argv[count($this->argv) - 1] .= ' '.$argument_part;
+            }
+            $this->argv[count($this->argv) - 1] .=
+            ' '.substr($argument_part, 0, strlen($argument_part) - 1);
+        } else {
+            $this->argv[] = substr(substr($argument, 1), 0, strlen($argument) - 2);
+        }
+    }
+
+    /**
+     * Parse a parameter belonging to a prefix that has a non-variadic
+     * structure in it's closure definition and increment the
+     * parameter parser.
+     * 
+     * @param  int                &$i
+     * @param  string             $argument
+     * @param  array              &$results
+     * @param  Closure            $closure
+     * @param  array              &$closure_arguments
+     * @param  string             $prefix
+     * @param  string             $parameter
+     * @param  ReflectionFunction $rFunction
+     */
+    private function parseNonVariadicPrefix(
+        &$i,
+        $argument,
+        &$results,
+        $closure,
+        &$closure_arguments,
+        $prefix,
+        $parameter,
+        $rFunction
+    )
+    {
+        $current_argument = 0;
+        $argument_count = count($rFunction->getParameters()) - 1;
+        while ($current_argument < $argument_count) {
+            $closure_arguments[] = $this->argv[$i + 1];
+            $current_argument += 1;
+            $i++;
+        }
+        $results[
+            substr(
+                $parameter,
+                strlen($prefix),
+                strlen($parameter) - strlen($prefix)
+            )
+        ] = $closure(...$closure_arguments);
+        $i++;
+    }
+
+    /**
+     * Parse a parameter belonging to a prefix that has a variadic
+     * structure in it's closure definition and increment the
+     * parameter parser.
+     * 
+     * @param  int                &$i
+     * @param  string             $argument
+     * @param  array              &$results
+     * @param  Closure            $closure
+     * @param  array              &$closure_arguments
+     * @param  string             $prefix
+     * @param  string             $parameter
+     */
+    private function parseVariadicPrefix(
+        &$i,
+        $argument,
+        &$results,
+        $closure,
+        &$closure_arguments,
+        $prefix,
+        $parameter
+    )
+    {
+        $i++;
+        while (
+            isset($this->argv[$i]) &&
+            ($argument = $this->argv[$i]) != null &&
+            ! $this->prefixExists($argument)
+        ) {
+            $closure_arguments[] = $argument;
+            $i++;
+        }
+        $results[
+            substr(
+                $parameter,
+                strlen($prefix),
+                strlen($parameter) - strlen($prefix)
+            )
+        ] = $closure(...$closure_arguments);
     }
 
     /**
