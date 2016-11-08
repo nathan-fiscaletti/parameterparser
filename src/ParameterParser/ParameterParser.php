@@ -145,7 +145,7 @@ class ParameterParser
                     $this->argv[count($this->argv) - 1] .=
                     ' '.substr($argument_part, 0, strlen($argument_part) - 1);
                 } else {
-                    $this->argv[] = substr(substr($argument, 1), 0, strlen($argument) - 2);   
+                    $this->argv[] = substr(substr($argument, 1), 0, strlen($argument) - 2);
                 }
             } else {
                 $this->argv[] = $argument;
