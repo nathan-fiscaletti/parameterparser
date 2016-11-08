@@ -54,9 +54,26 @@ class ParameterParser
                 ];
                 $rFunction = new \ReflectionFunction($closure);
                 if ($rFunction->isVariadic()) {
-                    $this->parseVariadicPrefix($i, $argument, $results, $closure, $closure_arguments, $prefix, $parameter);
+                    $this->parseVariadicPrefix(
+                        $i,
+                        $argument,
+                        $results,
+                        $closure,
+                        $closure_arguments,
+                        $prefix,
+                        $parameter
+                    );
                 } else {
-                   $this->parseNonVariadicPrefix($i, $argument, $results, $closure, $closure_arguments, $prefix, $parameter, $rFunction);
+                    $this->parseNonVariadicPrefix(
+                        $i,
+                        $argument,
+                        $results,
+                        $closure,
+                        $closure_arguments,
+                        $prefix,
+                        $parameter,
+                        $rFunction
+                    );
                 }
             } else {
                 $results['default'] = $this->prefixes->default->call(
@@ -91,23 +108,23 @@ class ParameterParser
         $this->argv = [];
         while (($argument = array_shift($argv)) != null) {
             switch (substr($argument, 0, 1)) {
-                case '\'' : {
-                    $this->parseQuote($argv, $argument, '\'');    
+                case '\'': {
+                    $this->parseQuote($argv, $argument, '\'');
                 }
 
-                case '"' : {
-                    $this->parseQuote($argv, $argument, '"');    
+                case '"': {
+                    $this->parseQuote($argv, $argument, '"');
                 }
 
-                default : {
-                    $this->argv[] = $argument;    
+                default: {
+                    $this->argv[] = $argument;
                 }
             }
         }
     }
 
     /**
-     * Parse all parameters between two matching single or double quotes 
+     * Parse all parameters between two matching single or double quotes
      * to a single element in the parameter array.
      *
      * @param  array  &$argv
@@ -135,7 +152,7 @@ class ParameterParser
      * Parse a parameter belonging to a prefix that has a non-variadic
      * structure in it's closure definition and increment the
      * parameter parser.
-     * 
+     *
      * @param  int                &$i
      * @param  string             $argument
      * @param  array              &$results
@@ -154,8 +171,7 @@ class ParameterParser
         $prefix,
         $parameter,
         $rFunction
-    )
-    {
+    ) {
         $current_argument = 0;
         $argument_count = count($rFunction->getParameters()) - 1;
         while ($current_argument < $argument_count) {
@@ -177,7 +193,7 @@ class ParameterParser
      * Parse a parameter belonging to a prefix that has a variadic
      * structure in it's closure definition and increment the
      * parameter parser.
-     * 
+     *
      * @param  int                &$i
      * @param  string             $argument
      * @param  array              &$results
@@ -194,8 +210,7 @@ class ParameterParser
         &$closure_arguments,
         $prefix,
         $parameter
-    )
-    {
+    ) {
         $i++;
         while (
             isset($this->argv[$i]) &&
