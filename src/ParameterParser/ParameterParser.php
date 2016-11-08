@@ -2,6 +2,9 @@
 
 namespace ParameterParser;
 
+use \ReflectionFunction;
+use \Closure;
+
 class ParameterParser
 {
     /**
@@ -12,22 +15,25 @@ class ParameterParser
     private $argv;
 
     /**
-     * The prefix cluster to use for parsing arguments to closures.
+     * The parameter cluster to use for parsing arguments to closures.
      *
      * @var array
      */
-    private $prefixes = null;
+    private $parameterCluster = null;
 
     /**
      * Construct the Parameter Parser using an array of arguments.
      *
      * @param array         $argv
-     * @param PrefixCluster $prefixes
+     * @param ParameterCluster $prefixes
      */
-    public function __construct($argv, PrefixCluster $prefixes = null)
+    public function __construct($argv, ParameterCluster $parameterCluster = null)
     {
         $this->preloadParameters($argv);
-        $this->prefixes = ($prefixes == null) ? new PrefixCluster() : $prefixes;
+        $this->parameterCluster = new ParameterCluster();
+        if ($parameterCluster != null) {
+            $this->parameterCluster = $parameterCluster;
+        }
     }
 
     /**
@@ -44,40 +50,35 @@ class ParameterParser
             $parameter = $this->argv[$i];
             if ($this->prefixExists($parameter)) {
                 $closure = $this->getClosure($parameter);
-                $prefix = $this->getPrefix($parameter);
-                $closure_arguments = [
-                    substr(
-                        $parameter,
-                        strlen($prefix),
-                        strlen($parameter) - strlen($prefix)
-                    ),
-                ];
-                $rFunction = new \ReflectionFunction($closure);
-                if ($rFunction->isVariadic()) {
-                    $this->parseVariadicPrefix(
-                        $i,
-                        $results,
-                        $closure,
-                        $closure_arguments,
-                        $prefix,
-                        $parameter
-                    );
+                if ($closure != null) {
+                    $prefix = $this->getPrefix($parameter);
+                    $closure_arguments = [];
+                    $rFunction = new ReflectionFunction($closure);
+                    if ($rFunction->isVariadic()) {
+                        $this->parseVariadicParameter(
+                            $i,
+                            $results,
+                            $closure,
+                            $closure_arguments,
+                            $prefix,
+                            $parameter
+                        );
+                    } else {
+                        $this->parseUniadicParameter(
+                            $i,
+                            $results,
+                            $closure,
+                            $closure_arguments,
+                            $prefix,
+                            $parameter,
+                            $rFunction
+                        );
+                    }
                 } else {
-                    $this->parseUniadicPrefix(
-                        $i,
-                        $results,
-                        $closure,
-                        $closure_arguments,
-                        $prefix,
-                        $parameter,
-                        $rFunction
-                    );
+                    $this->respondDefault($i, $results, $parameter);
                 }
             } else {
-                $results['default'] = $this->prefixes->default->call(
-                    $this, $parameter
-                );
-                $i++;
+                $this->respondDefault($i, $results, $parameter);
             }
         }
 
@@ -89,9 +90,25 @@ class ParameterParser
      *
      * @param Closure $closure
      */
-    public function setDefault(\Closure $closure)
+    public function setDefault(Closure $closure)
     {
-        $this->prefixes->setDefault($closure);
+        $this->parameterCluster->setDefault($closure);
+    }
+
+    /**
+     * Parses the parameter with the default closure and increments
+     * the parameter parser.
+     *
+     * @param  int    &$i
+     * @param  array  &$results
+     * @param  string $parameter
+     */
+    private function respondDefault(&$i, &$results, $parameter)
+    {
+        $results['default'] = $this->parameterCluster->default->call(
+            $this, $parameter
+        );
+        $i++;
     }
 
     /**
@@ -172,7 +189,7 @@ class ParameterParser
      * @param  string             $parameter
      * @param  ReflectionFunction $rFunction
      */
-    private function parseUniadicPrefix(
+    private function parseUniadicParameter(
         &$i,
         &$results,
         $closure,
@@ -182,7 +199,7 @@ class ParameterParser
         $rFunction
     ) {
         $current_argument = 0;
-        $argument_count = count($rFunction->getParameters()) - 1;
+        $argument_count = count($rFunction->getParameters());
         while ($current_argument < $argument_count) {
             $closure_arguments[] = $this->argv[$i + 1];
             $current_argument += 1;
@@ -210,7 +227,7 @@ class ParameterParser
      * @param  string             $prefix
      * @param  string             $parameter
      */
-    private function parseVariadicPrefix(
+    private function parseVariadicParameter(
         &$i,
         &$results,
         $closure,
@@ -237,7 +254,7 @@ class ParameterParser
     }
 
     /**
-     * Check if the prefix is defined in the prefix cluster.
+     * Check if the prefix is defined in the parameter cluster.
      *
      * @param string $parameter
      *
@@ -247,7 +264,7 @@ class ParameterParser
     {
         $prefixExists = false;
 
-        foreach (array_keys($this->prefixes->prefixes) as $prefix) {
+        foreach (array_keys($this->parameterCluster->prefixes) as $prefix) {
             if (substr($parameter, 0, strlen($prefix)) == $prefix) {
                 $prefixExists = true;
                 break;
@@ -268,7 +285,8 @@ class ParameterParser
     private function getPrefix($parameter)
     {
         $prefix = null;
-        foreach (array_keys($this->prefixes->prefixes) as $_prefix) {
+
+        foreach (array_keys($this->parameterCluster->prefixes) as $_prefix) {
             if (substr($parameter, 0, strlen($_prefix)) == $_prefix) {
                 $prefix = $_prefix;
             }
@@ -285,13 +303,19 @@ class ParameterParser
      *
      * @return Closure
      */
-    private function getClosure($parameter): \Closure
+    private function getClosure($parameter)
     {
         $closure = null;
 
-        foreach (array_keys($this->prefixes->prefixes) as $prefix) {
+        foreach (array_keys($this->parameterCluster->prefixes) as $prefix) {
             if (substr($parameter, 0, strlen($prefix)) == $prefix) {
-                $closure = $this->prefixes->prefixes[$prefix];
+                @$closure = $this->parameterCluster->prefixes[$prefix][
+                    substr(
+                        $parameter,
+                        strlen($prefix),
+                        strlen($parameter) - strlen($prefix)
+                    )
+                ];
             }
         }
 
