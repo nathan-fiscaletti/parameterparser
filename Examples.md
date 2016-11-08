@@ -9,7 +9,7 @@
 #### Code:
 ```php
 // Create a new parameter parser using the default PHP arguments.
-$parameterParser = new \ParameterParser\ParameterParser($argv);
+$parameterParser = new ParameterParser($argv);
 
 // Set the default closure of ParameterParser
 // In this example, we will just have two parameters that can be set.
@@ -37,7 +37,7 @@ $parameterParser->setDefault(function ($parameter) {
 $parameterParser->parse();
 ```
 ----
-### Example 2 : Using PrefixCluster to parse more advanced parameters.
+### Example 2 : Using ParameterCluster to parse more advanced parameters.
 
 #### Usage: 
     php test.php -name "Nathan Fiscaletti" +minify --join 'foo bar' apples --invite 'Mr. Foo' 'Mr. Bar'
@@ -55,63 +55,33 @@ $parameterParser->parse();
     )
 #### Code:
 ```php
-// Create a new prefix cluster.
-$prefixes = new \ParameterParser\PrefixCluster;
+// Create a new ParameterCluster.
+$parameters = new ParameterCluster;
 
-// Create a new closure for the dash prefix.
-$dashPrefixClosure = function ($parameter, $value) {
-    switch ($parameter) {
-        case 'name' : {
-            return $value;
-        }
+// Create new closures for each parameter.
+$nameClosure = new ParameterClosure('name', function ($name) {
+    return $name;
+});
 
-        default : {
-            echo 'Unknown parameter \'' . $parameter . '\'';
-            echo PHP_EOL;
-        }
-    }
-};
+$inviteClosure = new ParameterClosure('invite', function ($plusOne, $plusTwo) {
+    return [$plusOne, $plusTwo];
+});
 
-// Create a new closure for the double dash prefix.
-// Note: You cannot use the splat operator if you are using
-// the ->parse() function. Please see 'Example 3' for information
-// on using the splat operator to extend the functionality of closures.
-$doubleDashPrefixClosure = function ($parameter, $value1, $value2) {
-    switch ($parameter) {
-        case 'invite' : {
-            return [$value1, $value2];
-        }
+$joinClosure = new ParameterClosure('join', function ($stringOne, $stringTwo) {
+    return $stringOne . $stringTwo;
+});
 
-        case 'join' : {
-            return $value1.$value2;
-        }
+$minifyClosure = new ParameterClosure('minify', function() {
+    return true;
+});
 
-        default : {
-            echo 'Unknown parameter \'' . $parameter . '\'';
-            echo PHP_EOL;
-        }
-    }
-};
+// Apply the ParameterClosures to the ParameterCluster
+// and associate them each with a prefix.
+$parameters->add('-', $nameClosure);
+$parameters->add('+', $minifyClosure);
 
-// Create a new closure for the plus prefix.
-$plusPrefixClosure = function ($parameter) {
-    switch ($parameter) {
-        case 'minify' : {
-            return true;
-        }
-
-        default : {
-            echo 'Unknown parameter \'' . $parameter . '\'';
-            echo PHP_EOL;
-        }
-    }
-};
-
-
-// Apply the prefix closures and the prefixes to the prefix cluster.
-$prefixes->add('-', $dashPrefixClosure);
-$prefixes->add('--', $doubleDashPrefixClosure);
-$prefixes->add('+', $plusPrefixClosure);
+// Use the ->addMany function to add multiple closures to the same prefix.
+$parameters->addMany('--', [$inviteClosure, $joinClosure]);
 
 
 // Set a default closer for when no prefixes are found that match
@@ -120,28 +90,28 @@ $prefixes->add('+', $plusPrefixClosure);
 // This could be used to toggle certain things on or off, etc.
 // In this example, we'll just output an error.
 // 
-// Note: When using PrefixCluster you cannot use the setDefault()
+// Note: When using a ParameterCluster you cannot use the setDefault()
 // function of ParameterParser unless you execute the parse() function
-// after initializing the ParameterParser with the PrefixCluster.
+// after initializing the ParameterParser with the ParameterCluster.
 // 
 // This is because the setDefault function of ParameterParser simply
 // forwards the closure parameter to the setDefault function of the
-// PrefixCluster property of the ParameterParser.
+// ParameterCluster property of the ParameterParser.
 // 
-// When you initialize the ParameterParser with the PrefixCluster,
+// When you initialize the ParameterParser with the ParameterCluster,
 // the default function gets overridden with the default function 
-// of the new PrefixCluster. 
-$prefixes->setDefault(function ($parameter) {
+// of the new ParameterCluster. 
+$parameters->setDefault(function ($parameter) {
     echo 'Unknown parameter \'' . $parameter .'\'' . PHP_EOL;
 });
 
-// Parse the arguments using the prefix cluster.
-$results = (new \ParameterParser\ParameterParser($argv, $prefixes))->parse();
+// Parse the arguments using the ParameterCluster.
+$results = (new ParameterParser($argv, $parameters))->parse();
 
 print_r($results);
 ```
 ----
-### Example 3 : Using PrefixCluster and the splat operator `...` (aka. Variadic Closures)
+### Example 3 : Using ParameterCluster and the splat operator `...` (aka. Variadic Closures)
 
 #### Usage: 
     php test.php -load 'Main Library.so' File2.so +configurewith 'Main Library.so' -exec 'Pre Load.sh' Initialize.sh start.sh
@@ -166,51 +136,38 @@ print_r($results);
     )
 #### Code:
 ```php
-// Create a new prefix cluster.
-$prefixes = new \ParameterParser\PrefixCluster;
+// Create a new ParameterCluster.
+$parameters = new ParameterCluster();
 
-// Create a new variadic closure for the dash prefix using the splat operator (...)
-// This will allow our closure to take all parameters between this prefix
-// and the next prefix in the parameter list.
-$dashPrefixClosure = function ($parameter, ...$values) {
-    switch ($parameter) {
-        case 'load' : {
-            return $values;
-        }
+// Create a new variadic closures for the load and exec parameters using
+// the splat operator (...). This will allow the closure to take all
+// parameters between this initial 'load' parameter and the next 
+// prefixed parameter in the parameter list.
+$loadClosure = new ParameterClosure('load', function (... $arguments) {
+    return $arguments;
+});
 
-        case 'exec' : {
-            return $values;
-        }
+$execClosure = new ParameterClosure('exec', function (...$arguments) {
+    return $arguments;
+});
 
-        default : {
-            echo 'Unknown parameter \'' . $parameter . '\'';
-            echo PHP_EOL;
-        }
-    }
-};
-
-// Create a closure with regular parameters and no splat operator (...)
+// Create a new uniadic closure with regular parameter.
 // This will make any parameter passed to this prefix closure only take
-// the next parameter as an argument, and not care where the next 
+// the next parameter (or the next few, depending on the number of arguments
+// in the closure definition) as (an) argument(s), and not care where the next 
 // prefix is in the list of arguments.
-$plusPrefixClosure = function ($parameter, $value)
-{
-    switch ($parameter) {
-        case 'configurewith' : {
-            return $value;
-        }
-
-        default : {
-            echo 'Unknown parameter \'' . $parameter . '\'';
-            echo PHP_EOL;
-        }
-    }
-};
+$configureWithClosure = new ParameterClosure('configurewith', function ($file) {
+    return $file;
+});
 
 
-// Apply the prefix closures and the prefixes to the prefix cluster.
-$prefixes->add('-', $dashPrefixClosure);
-$prefixes->add('+', $plusPrefixClosure);
+// Apply the ParameterClosures to the ParameterCluster
+// and associate them each with a prefix.
+$parameters->add('+', $configureWithClosure);
+
+// Use the ->addMany function to add multiple closures to the same prefix.
+$parameters->addMany('-', [$loadClosure, $execClosure]);
+
 
 // Set a default closer for when no prefixes are found that match
 // the parameter being parsed. 
@@ -218,19 +175,23 @@ $prefixes->add('+', $plusPrefixClosure);
 // This could be used to toggle certain things on or off, etc.
 // In this example, we'll just output an error.
 // 
-// Note: When using a PrefixCluster you cannot use the setDefault()
+// Note: When using a ParameterCluster you cannot use the setDefault()
 // function of ParameterParser unless you execute the parse() function
-// after initializing the ParameterParser with the PrefixCluster.
+// after initializing the ParameterParser with the ParameterCluster.
 // 
 // This is because the setDefault function of ParameterParser simply
 // forwards the closure parameter to the setDefault function of the
-// PrefixCluster property of the ParameterParser.
-$prefixes->setDefault(function ($parameter) {
+// ParameterCluster property of the ParameterParser.
+// 
+// When you initialize the ParameterParser with the ParameterCluster,
+// the default function gets overridden with the default function 
+// of the new ParameterCluster. 
+$parameters->setDefault(function ($parameter) {
     echo 'Unknown parameter \'' . $parameter .'\'' . PHP_EOL;
 });
 
-// Parse the arguments using the prefix cluster.
-$results = (new \ParameterParser\ParameterParser($argv, $prefixes))->parse();
+// Parse the arguments using the ParameterCluster.
+$results = (new ParameterParser($argv, $parameters))->parse();
 
 print_r($results);
 ```
