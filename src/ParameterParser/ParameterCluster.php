@@ -2,7 +2,7 @@
 
 namespace ParameterParser;
 
-use \Closure;
+use Closure;
 
 class ParameterCluster
 {
@@ -43,6 +43,7 @@ class ParameterCluster
     public function add($prefix, ParameterClosure $closure)
     {
         $this->prefixes[$prefix][$closure->parameterName] = $closure->parameterClosure;
+
         return $this;
     }
 
@@ -57,6 +58,7 @@ class ParameterCluster
     public function remove($prefix, $parameterName)
     {
         unset($this->prefixes[$prefix][$parameterName]);
+
         return $this;
     }
 
@@ -89,6 +91,7 @@ class ParameterCluster
     public function setDefault(Closure $closure)
     {
         $this->default = $closure;
+
         return $this;
     }
 }
