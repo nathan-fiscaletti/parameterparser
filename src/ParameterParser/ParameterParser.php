@@ -63,7 +63,7 @@ class ParameterParser
                         $parameter
                     );
                 } else {
-                    $this->parseNonVariadicPrefix(
+                    $this->parseUniadicPrefix(
                         $i,
                         $results,
                         $closure,
@@ -161,8 +161,8 @@ class ParameterParser
 
     /**
      * Parse a parameter belonging to a prefix that has a non-variadic
-     * structure in it's closure definition and increment the
-     * parameter parser.
+     * (or uniadic) structure in it's closure definition and increment
+     * the parameter parser.
      *
      * @param  int                &$i
      * @param  array              &$results
@@ -172,7 +172,7 @@ class ParameterParser
      * @param  string             $parameter
      * @param  ReflectionFunction $rFunction
      */
-    private function parseNonVariadicPrefix(
+    private function parseUniadicPrefix(
         &$i,
         &$results,
         $closure,
