@@ -26,6 +26,8 @@ $parameterParser = new ParameterParser($argv, $parameters);
 $results = $parameterParser->parse();
 
 $name = $results['name'];
+
+// Do something with the name.
 ```
 
 ```
