@@ -27,3 +27,9 @@ $results = $parameterParser->parse();
 
 $name = $results['name'];
 ```
+
+```
+~/ php test.php -name 'Nathan Fiscaletti'
+
+   Your name is Nathan Fiscaletti
+```
