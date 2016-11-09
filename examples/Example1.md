@@ -1,7 +1,7 @@
 > [Example 2: Using ParameterCluster >](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md)
 
 ----
-### Example 1 : Using the Parameter Parser to parse simple parameters.
+### Example 1 : Using the ParameterParser to parse simple parameters.
 
 #### Usage: 
     php test.php silent color
