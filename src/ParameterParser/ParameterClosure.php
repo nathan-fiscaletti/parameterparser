@@ -60,7 +60,7 @@ class ParameterClosure
 
     /**
      * Return true if this object is a Parent ParameterClosure.
-     * 
+     *
      * @return bool
      */
     public function isParent()
