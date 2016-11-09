@@ -24,7 +24,7 @@ class ParameterParser
     /**
      * The validity of the parsed parameters.
      *
-     * @var boolean
+     * @var bool
      */
     private $valid = true;
 
@@ -105,7 +105,7 @@ class ParameterParser
     /**
      * Check if the parsed parameters are valid.
      *
-     * @return boolean
+     * @return bool
      */
     public function isValid()
     {
