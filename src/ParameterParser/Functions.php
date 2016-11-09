@@ -6,7 +6,7 @@
  |--------------------------------------------------------------------------
  */
 
-if (!function_exists('parameter')) {
+if (! function_exists('parameter')) {
     /**
      * Creates a new ParameterClosure.
      *
