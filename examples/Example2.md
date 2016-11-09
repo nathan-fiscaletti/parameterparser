@@ -83,6 +83,7 @@ $parameterParser = new ParameterParser($argv, $parameters);
 // Parse the arguments using the ParameterCluster.
 $results = $parameterParser->parse();
 
+// Validate the ParameterParser and if it's invalid, print the usage.
 if (! $parameterParser->isValid()) {
     echo 'Usage: php test.php -name [name]'.
     ' -invite [name-1] [name-2] -join [string-1] [string-2] +minify';
