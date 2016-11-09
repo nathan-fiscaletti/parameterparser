@@ -1,3 +1,4 @@
+> [< Example 1: Using ParameterParser](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example1.md) ...... [Example 3: Using Variadic Closures (...) >](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example3.md)
 ----
 ### Example 2 : Using ParameterCluster to parse more advanced parameters.
 
