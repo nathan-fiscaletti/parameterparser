@@ -22,6 +22,13 @@ class ParameterParser
     private $parameterCluster = null;
 
     /**
+     * The validity of the parsed parameters.
+     *
+     * @var boolean
+     */
+    private $valid = true;
+
+    /**
      * Construct the Parameter Parser using an array of arguments.
      *
      * @param array         $argv
@@ -96,8 +103,19 @@ class ParameterParser
     }
 
     /**
+     * Check if the parsed parameters are valid.
+     *
+     * @return boolean
+     */
+    public function isValid()
+    {
+        return $this->valid;
+    }
+
+    /**
      * Parses the parameter with the default closure and increments
-     * the parameter parser.
+     * the parameter parser. If '-1' is returned by the default
+     * closure, the parameters will be invalidated.
      *
      * @param  int    &$i
      * @param  array  &$results
@@ -105,9 +123,15 @@ class ParameterParser
      */
     private function respondDefault(&$i, &$results, $parameter)
     {
-        $results['default'] = $this->parameterCluster->default->call(
+        $defaultResult = $this->parameterCluster->default->call(
             $this, $parameter
         );
+
+        if ($defaultResult === -1) {
+            $this->valid = false;
+        }
+
+        $results[$parameter] = $defaultResult;
         $i++;
     }
 

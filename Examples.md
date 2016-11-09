@@ -4,8 +4,11 @@
 #### Usage: 
     php test.php silent color
 #### Output: 
-    Silent mode has been enabled.
-    Color has been enabled.
+    Array
+    (
+        [color] => 1
+        [silent] => 1
+    )
 #### Code:
 ```php
 // Create a new parameter parser using the default PHP arguments.
@@ -16,25 +19,33 @@ $parameterParser = new ParameterParser($argv);
 $parameterParser->setDefault(function ($parameter) {
     switch($parameter) {
         case 'color' : {
-            echo 'Color has been enabled.';
-            break;
+            return true;
         }
 
         case 'silent' : {
-            echo 'Silent mode has been enabled.';
-            break;
+            return true;
         }
 
+        // Always return -1 if no valid parameter is found.
+        // This will invalidate the parameters.
+        // 
+        // After parsing, use $parameterParser->isValid()
+        // to check validity.
         default : {
-            echo 'Unknown parameter \'' . $parameter . '\'';
+            return -1;
         }
     }
-
-    echo PHP_EOL;
 });
 
 // Parse the parameters using the parameter parser.
-$parameterParser->parse();
+$results = $parameterParser->parse();
+
+if (! $parameterParser->isValid()) {
+    echo 'Usage: php test.php [color] [silent]';
+    echo PHP_EOL;
+} else {
+    print_r($results);
+}
 ```
 ----
 ### Example 2 : Using ParameterCluster to parse more advanced parameters.
@@ -102,13 +113,31 @@ $parameters->addMany('--', [$inviteClosure, $joinClosure]);
 // the default function gets overridden with the default function 
 // of the new ParameterCluster. 
 $parameters->setDefault(function ($parameter) {
-    echo 'Unknown parameter \'' . $parameter .'\'' . PHP_EOL;
+    // Always return -1 if no valid parameter is found.
+    // This will invalidate the parameters.
+    // 
+    // After parsing, use $parameterParser->isValid()
+    // to check validity.
+    // 
+    // By default, the default closure will always return -1 unless
+    // you directly override it.
+    echo $parameter;
+    return -1;
 });
 
-// Parse the arguments using the ParameterCluster.
-$results = (new ParameterParser($argv, $parameters))->parse();
+// Create a ParameterParser using the ParameterCluster.
+$parameterParser = new ParameterParser($argv, $parameters);
 
-print_r($results);
+// Parse the arguments using the ParameterCluster.
+$results = $parameterParser->parse();
+
+if (! $parameterParser->isValid()) {
+    echo 'Usage: php test.php -name [name]'.
+    ' -invite [name-1] [name-2] -join [string-1] [string-2] +minify';
+    echo PHP_EOL;
+} else {
+    print_r($results);
+}
 ```
 ----
 ### Example 3 : Using ParameterCluster and the splat operator `...` (aka. Variadic Closures)
@@ -187,11 +216,29 @@ $parameters->addMany('-', [$loadClosure, $execClosure]);
 // the default function gets overridden with the default function 
 // of the new ParameterCluster. 
 $parameters->setDefault(function ($parameter) {
-    echo 'Unknown parameter \'' . $parameter .'\'' . PHP_EOL;
+    // Always return -1 if no valid parameter is found.
+    // This will invalidate the parameters.
+    // 
+    // After parsing, use $parameterParser->isValid()
+    // to check validity.
+    // 
+    // By default, the default closure will always return -1 unless
+    // you directly override it.
+    return -1;
 });
 
-// Parse the arguments using the ParameterCluster.
-$results = (new ParameterParser($argv, $parameters))->parse();
+// Create a ParameterParser using the ParameterCluster.
+$parameterParser = new ParameterParser($argv, $parameters);
 
-print_r($results);
+// Parse the arguments using the ParameterCluster.
+$results = $parameterParser->parse();
+
+if (! $parameterParser->isValid()) {
+    echo 'Usage: php test.php -load [files...]'.
+         ' -exec [...files] +configurewith [file]';
+    echo PHP_EOL;
+} else {
+    print_r($results);
+}
+
 ```
