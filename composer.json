@@ -15,7 +15,10 @@
     "autoload": {
         "psr-4": {
             "ParameterParser\\": "src/ParameterParser"
-        }
+        },
+        "files": [
+            "src/ParameterParser/Functions.php"
+        ]
     },
     "require": {
         "php": ">=7.0"
