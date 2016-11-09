@@ -37,14 +37,16 @@
 <a href="https://packagist.org/packages/nafisc/parameterparser"><img src="https://poser.pugx.org/nafisc/parameterparser/v/unstable?format=flat" alt="Latest Unstable Version"></a>
 <a href="https://packagist.org/packages/nafisc/parameterparser"><img src="https://poser.pugx.org/nafisc/parameterparser/license?format=flat" alt="License"></a></p>
 
-<p><a href="https://github.com/nathan-fiscaletti/parameterparser/blob/master/Examples.md">Advanced Code Examples</a></p>
+<p><a href="https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example1.md">Advanced Code Examples</a></p>
+
+<h3>
+<a id="example-usage" class="anchor" href="#example-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Usage</h3>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c">// Initialize a new ParameterCluster</span></span>
 <span class="pl-s1"><span class="pl-smi">$parameters</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">ParameterCluster</span>();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c">// Add a ParameterClosure to the ParameterCluster</span></span>
 <span class="pl-s1"><span class="pl-smi">$parameters</span><span class="pl-k">-&gt;</span>add(<span class="pl-s"><span class="pl-pds">'</span>-<span class="pl-pds">'</span></span>, <span class="pl-k">new</span> <span class="pl-c1">ParameterClosure</span>(<span class="pl-s"><span class="pl-pds">'</span>name<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-smi">$name</span>) {</span>
-<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>Your name is <span class="pl-pds">'</span></span> <span class="pl-k">.</span> <span class="pl-smi">$name</span> <span class="pl-k">.</span> <span class="pl-c1">PHP_EOL</span>;</span>
 <span class="pl-s1">    <span class="pl-k">return</span> <span class="pl-smi">$name</span>;</span>
 <span class="pl-s1">}));</span>
 <span class="pl-s1"></span>
@@ -54,9 +56,24 @@
 <span class="pl-s1"><span class="pl-c">// Parse the parameters using the ParameterParser.</span></span>
 <span class="pl-s1"><span class="pl-smi">$results</span> <span class="pl-k">=</span> <span class="pl-smi">$parameterParser</span><span class="pl-k">-&gt;</span>parse();</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-smi">$name</span> <span class="pl-k">=</span> <span class="pl-smi">$results</span>[<span class="pl-s"><span class="pl-pds">'</span>name<span class="pl-pds">'</span></span>];</span>
+<span class="pl-s1"><span class="pl-c">// Verify that the parameters were valid after parsing.</span></span>
+<span class="pl-s1"><span class="pl-k">if</span> (<span class="pl-k">!</span> <span class="pl-smi">$parameterParser</span><span class="pl-k">-&gt;</span>isValid()) {</span>
 <span class="pl-s1"></span>
-<span class="pl-s1"><span class="pl-c">// Do something with the name.</span></span></pre></div>
+<span class="pl-s1">    <span class="pl-c">// Since it was not valid, output usage.</span></span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>Usage: php test.php -name [name]<span class="pl-pds">'</span></span> <span class="pl-k">.</span> <span class="pl-c1">PHP_EOL</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">} <span class="pl-k">else</span> {</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">// Retrieve the name from the results</span></span>
+<span class="pl-s1">    <span class="pl-smi">$name</span> <span class="pl-k">=</span> <span class="pl-smi">$results</span>[<span class="pl-s"><span class="pl-pds">'</span>name<span class="pl-pds">'</span></span>];</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">// Output the name</span></span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>Your name is <span class="pl-pds">'</span></span> <span class="pl-k">.</span> <span class="pl-smi">$name</span> <span class="pl-k">.</span> <span class="pl-c1">PHP_EOL</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">}</span></pre></div>
+
+<h3>
+<a id="output" class="anchor" href="#output" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Output</h3>
 
 <pre><code>~/ php test.php -name 'Nathan Fiscaletti'
 
