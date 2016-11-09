@@ -83,10 +83,10 @@ class ParameterParser
                         );
                     }
                 } else {
-                    $this->respondDefault($i, $results, $parameter . ' DEF_1');
+                    $this->respondDefault($i, $results, $parameter);
                 }
             } else {
-                $this->respondDefault($i, $results, $parameter  . ' DEF_2');
+                $this->respondDefault($i, $results, $parameter);
             }
         }
 
@@ -136,6 +136,11 @@ class ParameterParser
         $i++;
     }
 
+    /**
+     * Preload aliase ParameterClosures into the system.
+     *
+     * @param  string $argv
+     */
     private function preloadAliases($argv)
     {
         foreach (array_keys($this->parameterCluster->prefixes) as $prefix) {
@@ -147,7 +152,7 @@ class ParameterParser
                     );
                     $aliasClosure->parent = $parameterClosure;
                     $this->parameterCluster->add(
-                        $prefix, 
+                        $prefix,
                         $aliasClosure
                     );
                 }
