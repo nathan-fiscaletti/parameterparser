@@ -48,7 +48,7 @@ $parameters->add('+', $minifyClosure);
 $parameters->addMany('--', [$inviteClosure, $joinClosure]);
 
 
-// Set a default closer for when no prefixes are found that match
+// Set a default closure for when no prefixes are found that match
 // the parameter being parsed. 
 // 
 // This could be used to toggle certain things on or off, etc.
