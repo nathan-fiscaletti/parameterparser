@@ -15,7 +15,6 @@ $parameters = new ParameterCluster();
 
 // Add a ParameterClosure to the ParameterCluster
 $parameters->add('-', new ParameterClosure('name', function ($name) {
-    echo 'Your name is ' . $name . PHP_EOL;
     return $name;
 }));
 
@@ -25,9 +24,11 @@ $parameterParser = new ParameterParser($argv, $parameters);
 // Parse the parameters using the ParameterParser.
 $results = $parameterParser->parse();
 
+// Retrieve the name from the results
 $name = $results['name'];
 
-// Do something with the name.
+// Output the name
+echo 'Your name is ' . $name . PHP_EOL;
 ```
 
 ```
