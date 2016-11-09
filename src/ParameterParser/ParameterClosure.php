@@ -47,8 +47,24 @@ class ParameterClosure
         $this->parameterClosure = $parameterClosure;
     }
 
+    /**
+     * Add an alias and associate it with a prefix.
+     *
+     * @param string $prefix
+     * @param string $parameterName
+     */
     public function addAlias($prefix, $parameterName)
     {
         $this->aliases[$prefix] = $parameterName;
+    }
+
+    /**
+     * Return true if this object is a Parent ParameterClosure.
+     * 
+     * @return bool
+     */
+    public function isParent()
+    {
+        return $this->parent != null;
     }
 }
