@@ -23,19 +23,19 @@
 $parameters = new ParameterCluster;
 
 // Create new closures for each parameter.
-$nameClosure = new ParameterClosure('name', function ($name) {
+$nameClosure = parameter('name', function ($name) {
     return $name;
 });
 
-$inviteClosure = new ParameterClosure('invite', function ($plusOne, $plusTwo) {
+$inviteClosure = parameter('invite', function ($plusOne, $plusTwo) {
     return [$plusOne, $plusTwo];
 });
 
-$joinClosure = new ParameterClosure('join', function ($stringOne, $stringTwo) {
+$joinClosure = parameter('join', function ($stringOne, $stringTwo) {
     return $stringOne . $stringTwo;
 });
 
-$minifyClosure = new ParameterClosure('minify', function() {
+$minifyClosure = parameter('minify', function() {
     return true;
 });
 

@@ -20,7 +20,7 @@
 $parameters = new ParameterCluster();
 
 // Create a new uniadic closure and associate it with the exec parameter.
-$execClosure = new ParameterClosure('exec', function ($arguments) {
+$execClosure = parameter('exec', function ($arguments) {
     return $arguments;
 });
 
