@@ -1,4 +1,4 @@
-> [< Example 2: Using ParameterCluster](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md) ...... [Example 4: Using Aliases](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example4.md)
+> [< Example 2: Using ParameterCluster](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md) ...... [Example 4: Using Aliases >](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example4.md)
 
 ----
 ### Example 3 : Using ParameterCluster and the splat operator `...` (aka. Variadic Closures)
