@@ -42,6 +42,7 @@ $parameterParser->setDefault(function ($parameter) {
 // Parse the parameters using the parameter parser.
 $results = $parameterParser->parse();
 
+// Validate the ParameterParser and if it's invalid, print the usage.
 if (! $parameterParser->isValid()) {
     echo 'Usage: php test.php [color] [silent]';
     echo PHP_EOL;
