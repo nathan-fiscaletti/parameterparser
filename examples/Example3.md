@@ -33,7 +33,7 @@ $parameters = new ParameterCluster();
 // the splat operator (...). This will allow the closure to take all
 // parameters between this initial 'load' parameter and the next 
 // prefixed parameter in the parameter list.
-$loadClosure = new ParameterClosure('load', function (... $arguments) {
+$loadClosure = new ParameterClosure('load', function (...$arguments) {
     return $arguments;
 });
 
