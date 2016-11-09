@@ -7,7 +7,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/nafisc/parameterparser/v/unstable?format=flat)](https://packagist.org/packages/nafisc/parameterparser)
 [![License](https://poser.pugx.org/nafisc/parameterparser/license?format=flat)](https://packagist.org/packages/nafisc/parameterparser)
 
-[Advanced Code Examples](https://github.com/nathan-fiscaletti/parameterparser/blob/master/Examples/Example1.md)
+[Advanced Code Examples](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example1.md)
 
 ### Example Usage
 ```php

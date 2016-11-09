@@ -91,4 +91,4 @@ if (! $parameterParser->isValid()) {
 }
 ```
 
-> [< Example 1: Using ParameterParser](https://github.com/nathan-fiscaletti/parameterparser/blob/master/Examples/Example1.md) [Example 3: Using Variadic Closures (...) >](https://github.com/nathan-fiscaletti/parameterparser/blob/master/Examples/Example3.md)
+> [< Example 1: Using ParameterParser](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example1.md) [Example 3: Using Variadic Closures (...) >](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example3.md)
