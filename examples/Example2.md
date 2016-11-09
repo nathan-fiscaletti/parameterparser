@@ -74,7 +74,6 @@ $parameters->setDefault(function ($parameter) {
     // 
     // By default, the default closure will always return -1 unless
     // you directly override it.
-    echo $parameter;
     return -1;
 });
 
