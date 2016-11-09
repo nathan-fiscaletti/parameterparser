@@ -9,6 +9,7 @@
 
 [Advanced Code Examples](https://github.com/nathan-fiscaletti/parameterparser/blob/master/Examples.md)
 
+### Example Usage
 ```php
 // Initialize a new ParameterCluster
 $parameters = new ParameterCluster();
@@ -41,6 +42,7 @@ if (! $parameterParser->isValid()) {
 }
 ```
 
+### Output
 ```
 ~/ php test.php -name 'Nathan Fiscaletti'
 
