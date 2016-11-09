@@ -28,7 +28,7 @@ class ParameterCluster
     public function __construct()
     {
         $this->default = function ($parameter) {
-            trigger_error('Unknown parameter \''.$parameter.'\'', E_USER_WARNING);
+            return -1;
         };
     }
 

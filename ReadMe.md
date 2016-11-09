@@ -24,11 +24,21 @@ $parameterParser = new ParameterParser($argv, $parameters);
 // Parse the parameters using the ParameterParser.
 $results = $parameterParser->parse();
 
-// Retrieve the name from the results
-$name = $results['name'];
+// Verify that the parameters were valid after parsing.
+if (! $parameterParser->isValid()) {
 
-// Output the name
-echo 'Your name is ' . $name . PHP_EOL;
+    // Since it was not valid, output usage.
+    echo 'Usage: php test.php -name [name]' . PHP_EOL;
+
+} else {
+
+    // Retrieve the name from the results
+    $name = $results['name'];
+
+    // Output the name
+    echo 'Your name is ' . $name . PHP_EOL;
+    
+}
 ```
 
 ```
