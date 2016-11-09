@@ -101,4 +101,4 @@ if (! $parameterParser->isValid()) {
 }
 
 ```
-> [< Example 2: Using ParameterCluster](https://github.com/nathan-fiscaletti/parameterparser/blob/master/Examples/Example1.md)
+> [< Example 2: Using ParameterCluster](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example1.md)

@@ -48,4 +48,4 @@ if (! $parameterParser->isValid()) {
 }
 ```
 
-> [Example 2: Using ParameterCluster >](https://github.com/nathan-fiscaletti/parameterparser/blob/master/Examples/Example2.md)
+> [Example 2: Using ParameterCluster >](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md)
