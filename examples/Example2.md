@@ -23,19 +23,19 @@
 $parameters = new ParameterCluster;
 
 // Create new closures for each parameter.
-$nameClosure = new ParameterClosure('name', function ($name) {
+$nameClosure = parameter('name', function ($name) {
     return $name;
 });
 
-$inviteClosure = new ParameterClosure('invite', function ($plusOne, $plusTwo) {
+$inviteClosure = parameter('invite', function ($plusOne, $plusTwo) {
     return [$plusOne, $plusTwo];
 });
 
-$joinClosure = new ParameterClosure('join', function ($stringOne, $stringTwo) {
+$joinClosure = parameter('join', function ($stringOne, $stringTwo) {
     return $stringOne . $stringTwo;
 });
 
-$minifyClosure = new ParameterClosure('minify', function() {
+$minifyClosure = parameter('minify', function() {
     return true;
 });
 
@@ -83,6 +83,7 @@ $parameterParser = new ParameterParser($argv, $parameters);
 // Parse the arguments using the ParameterCluster.
 $results = $parameterParser->parse();
 
+// Validate the ParameterParser and if it's invalid, print the usage.
 if (! $parameterParser->isValid()) {
     echo 'Usage: php test.php -name [name]'.
     ' -invite [name-1] [name-2] -join [string-1] [string-2] +minify';
