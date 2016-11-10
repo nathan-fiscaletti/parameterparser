@@ -319,13 +319,17 @@ class ParameterParser
                 $this->valid = false;
             }
         } else {
-            $results[
-                substr(
-                    $parameter,
-                    strlen($prefix),
-                    strlen($parameter) - strlen($prefix)
-                )
-            ] = $closure(...$closure_arguments);
+            if (count($closure_arguments) > 0) {
+                $results[
+                    substr(
+                        $parameter,
+                        strlen($prefix),
+                        strlen($parameter) - strlen($prefix)
+                    )
+                ] = $closure(...$closure_arguments);
+            } else {
+                $this->valid = false;
+            }
         }
     }
 
