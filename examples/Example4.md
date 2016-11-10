@@ -38,9 +38,6 @@ $execClosure->addAlias('--', 'exec-with');
 // Add the exec ParameterClosure to the ParameterCluster.
 $parameters->add('-', $execClosure);
 
-// Create a ParameterParser using the ParameterCluster.
-$parameterParser = new ParameterParser($argv, $parameters);
-
 // Set a default closer for when no prefixes are found that match
 // the parameter being parsed. 
 // 
@@ -69,6 +66,9 @@ $parameters->setDefault(function ($parameter) {
     // you directly override it.
     return -1;
 });
+
+// Create a ParameterParser using the ParameterCluster.
+$parameterParser = new ParameterParser($argv, $parameters);
 
 // Parse the arguments using the ParameterCluster.
 $results = $parameterParser->parse();

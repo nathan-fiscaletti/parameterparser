@@ -137,7 +137,7 @@ class ParameterParser
     }
 
     /**
-     * Preload aliase ParameterClosures into the system.
+     * Preload alias ParameterClosures into the system.
      *
      * @param  string $argv
      */
