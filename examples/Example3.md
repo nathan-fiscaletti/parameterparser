@@ -1,4 +1,4 @@
-> [< Example 2: Using ParameterCluster](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md)
+> [< Example 2: Using ParameterCluster](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md) ...... [Example 4: Using Aliases >](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example4.md)
 
 ----
 ### Example 3 : Using ParameterCluster and the splat operator `...` (aka. Variadic Closures)
@@ -33,11 +33,11 @@ $parameters = new ParameterCluster();
 // the splat operator (...). This will allow the closure to take all
 // parameters between this initial 'load' parameter and the next 
 // prefixed parameter in the parameter list.
-$loadClosure = new ParameterClosure('load', function (...$arguments) {
+$loadClosure = parameter('load', function (...$arguments) {
     return $arguments;
 });
 
-$execClosure = new ParameterClosure('exec', function (...$arguments) {
+$execClosure = parameter('exec', function (...$arguments) {
     return $arguments;
 });
 
@@ -94,6 +94,7 @@ $parameterParser = new ParameterParser($argv, $parameters);
 // Parse the arguments using the ParameterCluster.
 $results = $parameterParser->parse();
 
+// Validate the ParameterParser and if it's invalid, print the usage.
 if (! $parameterParser->isValid()) {
     echo 'Usage: php test.php -load [files...]'.
          ' -exec [...files] +configurewith [file]';
@@ -103,4 +104,4 @@ if (! $parameterParser->isValid()) {
 }
 
 ```
-> [< Example 2: Using ParameterCluster](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md)
+> [< Example 2: Using ParameterCluster](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md) ...... [Example 4: Using Aliases](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example4.md)

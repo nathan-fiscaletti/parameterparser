@@ -42,7 +42,7 @@ class ParameterCluster
      */
     public function add($prefix, ParameterClosure $closure)
     {
-        $this->prefixes[$prefix][$closure->parameterName] = $closure->parameterClosure;
+        $this->prefixes[$prefix][$closure->parameterName] = $closure;
 
         return $this;
     }
@@ -75,7 +75,7 @@ class ParameterCluster
         foreach ($parameters as $parameter) {
             $this->prefixes[$prefix][
                 $parameter->parameterName
-            ] = $parameter->parameterClosure;
+            ] = $parameter;
         }
 
         return $this;

@@ -36,11 +36,12 @@ class ParameterParser
      */
     public function __construct($argv, ParameterCluster $parameterCluster = null)
     {
-        $this->preloadParameters($argv);
         $this->parameterCluster = new ParameterCluster();
         if ($parameterCluster != null) {
             $this->parameterCluster = $parameterCluster;
         }
+        $this->preloadAliases($argv);
+        $this->preloadParameters($argv);
     }
 
     /**
@@ -136,6 +137,30 @@ class ParameterParser
     }
 
     /**
+     * Preload aliase ParameterClosures into the system.
+     *
+     * @param  string $argv
+     */
+    private function preloadAliases($argv)
+    {
+        foreach (array_keys($this->parameterCluster->prefixes) as $prefix) {
+            foreach ($this->parameterCluster->prefixes[$prefix] as $parameterClosure) {
+                foreach ($parameterClosure->aliases as $prefix => $alias) {
+                    $aliasClosure = new ParameterClosure(
+                        $alias,
+                        $parameterClosure->parameterClosure
+                    );
+                    $aliasClosure->parent = $parameterClosure;
+                    $this->parameterCluster->add(
+                        $prefix,
+                        $aliasClosure
+                    );
+                }
+            }
+        }
+    }
+
+    /**
      * Preloads the parameters and moves any parameters surrounded by
      * single or double quotes to their own parameter.
      *
@@ -145,6 +170,7 @@ class ParameterParser
     {
         array_shift($argv);
         $this->argv = [];
+
         while (($argument = array_shift($argv)) != null) {
             switch (substr($argument, 0, 1)) {
                 case '\'': {
@@ -229,13 +255,20 @@ class ParameterParser
             $current_argument += 1;
             $i++;
         }
-        $results[
-            substr(
-                $parameter,
-                strlen($prefix),
-                strlen($parameter) - strlen($prefix)
-            )
-        ] = $closure(...$closure_arguments);
+        $parameterClosure = $this->getParameterClosure($parameter);
+        if ($parameterClosure->parent != null) {
+            $results[
+                $parameterClosure->parent->parameterName
+            ] = $closure(...$closure_arguments);
+        } else {
+            $results[
+                substr(
+                    $parameter,
+                    strlen($prefix),
+                    strlen($parameter) - strlen($prefix)
+                )
+            ] = $closure(...$closure_arguments);
+        }
         $i++;
     }
 
@@ -268,13 +301,20 @@ class ParameterParser
             $closure_arguments[] = $argument;
             $i++;
         }
-        $results[
-            substr(
-                $parameter,
-                strlen($prefix),
-                strlen($parameter) - strlen($prefix)
-            )
-        ] = $closure(...$closure_arguments);
+        $parameterClosure = $this->getParameterClosure($parameter);
+        if ($parameterClosure->parent != null) {
+            $results[
+                $parameterClosure->parent->parameterName
+            ] = $closure(...$closure_arguments);
+        } else {
+            $results[
+                substr(
+                    $parameter,
+                    strlen($prefix),
+                    strlen($parameter) - strlen($prefix)
+                )
+            ] = $closure(...$closure_arguments);
+        }
     }
 
     /**
@@ -339,10 +379,37 @@ class ParameterParser
                         strlen($prefix),
                         strlen($parameter) - strlen($prefix)
                     )
-                ];
+                ]->parameterClosure;
             }
         }
 
         return $closure;
+    }
+
+    /**
+     * Get the ParameterClosure object associated with a parameter.
+     * If no ParameterClosure is found for the parameter, return null.
+     *
+     * @param  string $parameter
+     *
+     * @return ParameterClosure
+     */
+    private function getParameterClosure($parameter)
+    {
+        $parameterClosure = null;
+
+        foreach (array_keys($this->parameterCluster->prefixes) as $prefix) {
+            if (substr($parameter, 0, strlen($prefix)) == $prefix) {
+                @$parameterClosure = $this->parameterCluster->prefixes[$prefix][
+                    substr(
+                        $parameter,
+                        strlen($prefix),
+                        strlen($parameter) - strlen($prefix)
+                    )
+                ];
+            }
+        }
+
+        return $parameterClosure;
     }
 }
