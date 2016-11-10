@@ -1,4 +1,8 @@
-> [Example 2: Using ParameterCluster >](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md)
+## Index:
+* Example 1: Using ParameterCluster
+* [Example 2: Using ParameterCluster](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md)
+* [Example 3: Using Variadic Closures (...)](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example3.md)
+* [Example 4: Using Aliases](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example4.md)
 
 ----
 ### Example 1 : Using the ParameterParser to parse simple parameters.
@@ -50,5 +54,3 @@ if (! $parameterParser->isValid()) {
     print_r($results);
 }
 ```
-
-> [Example 2: Using ParameterCluster >](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md)
