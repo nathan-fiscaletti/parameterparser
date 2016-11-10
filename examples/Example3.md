@@ -50,7 +50,7 @@ $execClosure = parameter('exec', function (...$arguments) {
 // the next parameter (or the next few, depending on the number of arguments
 // in the closure definition) as (an) argument(s), and not care where the next 
 // prefix is in the list of arguments.
-$configureWithClosure = new ParameterClosure('configurewith', function ($file) {
+$configureWithClosure = parameter('configurewith', function ($file) {
     return $file;
 });
 
