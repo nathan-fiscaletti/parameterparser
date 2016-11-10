@@ -11,6 +11,12 @@
 
 [Advanced Code Examples](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example1.md)
 
+### Features
+* Parse command line parameters.
+* Assign aliases to parameters.
+* Custom closures for each command line parameter.
+* Customize the way the command line is parsed.
+
 ### Example Usage
 ```php
 // Initialize a new ParameterCluster
