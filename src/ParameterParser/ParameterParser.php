@@ -250,24 +250,32 @@ class ParameterParser
     ) {
         $current_argument = 0;
         $argument_count = count($rFunction->getParameters());
-        while ($current_argument < $argument_count) {
+        while ($current_argument < $argument_count && count($this->argv) > ($i + 1)) {
             $closure_arguments[] = $this->argv[$i + 1];
             $current_argument += 1;
             $i++;
         }
         $parameterClosure = $this->getParameterClosure($parameter);
         if ($parameterClosure->parent != null) {
-            $results[
-                $parameterClosure->parent->parameterName
-            ] = $closure(...$closure_arguments);
+            if (count($closure_arguments) == $argument_count) {
+                $results[
+                    $parameterClosure->parent->parameterName
+                ] = $closure(...$closure_arguments);
+            } else {
+                $this->valid = false;
+            }
         } else {
-            $results[
-                substr(
-                    $parameter,
-                    strlen($prefix),
-                    strlen($parameter) - strlen($prefix)
-                )
-            ] = $closure(...$closure_arguments);
+            if (count($closure_arguments) == $argument_count) {
+                $results[
+                    substr(
+                        $parameter,
+                        strlen($prefix),
+                        strlen($parameter) - strlen($prefix)
+                    )
+                ] = $closure(...$closure_arguments);
+            } else {
+                $this->valid = false;
+            }
         }
         $i++;
     }
@@ -303,9 +311,13 @@ class ParameterParser
         }
         $parameterClosure = $this->getParameterClosure($parameter);
         if ($parameterClosure->parent != null) {
-            $results[
-                $parameterClosure->parent->parameterName
-            ] = $closure(...$closure_arguments);
+            if (count($closure_arguments) > 0) {
+                $results[
+                    $parameterClosure->parent->parameterName
+                ] = $closure(...$closure_arguments);
+            } else {
+                $this->valid = false;
+            }
         } else {
             $results[
                 substr(
