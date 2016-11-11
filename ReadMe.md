@@ -23,7 +23,7 @@
 $parameters = new ParameterCluster();
 
 // Add a ParameterClosure to the ParameterCluster
-$parameters->add('-', parameter('name', function ($name) {
+$parameters->add(parameter('-', 'name', function ($name) {
     return $name;
 }));
 
