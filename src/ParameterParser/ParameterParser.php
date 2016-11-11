@@ -175,8 +175,6 @@ class ParameterParser
 
     /**
      * Preload alias ParameterClosures into the system.
-     *
-     * @param  string $argv
      */
     private function preloadAliases()
     {
