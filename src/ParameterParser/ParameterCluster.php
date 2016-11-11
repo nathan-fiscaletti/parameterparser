@@ -3,6 +3,7 @@
 namespace ParameterParser;
 
 use Closure;
+use ReflectionFunction;
 
 class ParameterCluster
 {
@@ -35,14 +36,13 @@ class ParameterCluster
     /**
      * Add a parameter closure.
      *
-     * @param string $prefix
      * @param ParameterClosure $closure
      *
      * @return ParameterCluster
      */
-    public function add($prefix, ParameterClosure $closure)
+    public function add(ParameterClosure $closure)
     {
-        $this->prefixes[$prefix][$closure->parameterName] = $closure;
+        $this->prefixes[$closure->prefix][$closure->parameterName] = $closure;
 
         return $this;
     }
@@ -70,10 +70,10 @@ class ParameterCluster
      *
      * @return ParameterCluster
      */
-    public function addMany($prefix, $parameters)
+    public function addMany($parameters)
     {
         foreach ($parameters as $parameter) {
-            $this->prefixes[$prefix][
+            $this->prefixes[$parameter->prefix][
                 $parameter->parameterName
             ] = $parameter;
         }
@@ -93,5 +93,40 @@ class ParameterCluster
         $this->default = $closure;
 
         return $this;
+    }
+
+    /**
+     * Retrieves the full usage of the ParameterCluster as a string.
+     *
+     * @var string $customBinary
+     * @var string $customScript
+     *
+     * @return string
+     */
+    public function getFullUsage($customBinary = null, $customScript = null)
+    {
+        $fullUsage = '';
+        
+        if ($customBinary == null) {
+            $fullUsage = 'php ';
+        } else {
+            $fullUsage = $customBinary . ' ';
+        }
+
+        if ($customScript == null) {
+             $fullUsage .= basename($_SERVER["SCRIPT_NAME"]) . ' ';
+        } else {
+            $fullUsage .= $customScript . ' ';
+        }
+
+        foreach ($this->prefixes as $prefix => $parameters) {
+            foreach ($parameters as $parameter) {
+                if ($parameter->parent == null) {
+                    $fullUsage .= $parameter->getUsage() . ' ';
+                }
+            }
+        }
+
+        return $fullUsage;
     }
 }
