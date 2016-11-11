@@ -3,6 +3,7 @@
 * Example 2: Using ParameterCluster
 * [Example 3: Using Variadic Closures (...)](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example3.md)
 * [Example 4: Using Aliases](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example4.md)
+* [Example 5: Using Error Handlers](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example5.md)
 
 ----
 ### Example 2 : Using ParameterCluster to parse more advanced parameters.
@@ -27,29 +28,29 @@
 $parameters = new ParameterCluster;
 
 // Create new closures for each parameter.
-$nameClosure = parameter('name', function ($name) {
+$nameClosure = parameter('-', 'name', function ($name) {
     return $name;
 });
 
-$inviteClosure = parameter('invite', function ($plusOne, $plusTwo) {
-    return [$plusOne, $plusTwo];
+$inviteClosure = parameter('--', 'invite', function ($name1, $name2) {
+    return [$name1, $name2];
 });
 
-$joinClosure = parameter('join', function ($stringOne, $stringTwo) {
-    return $stringOne . $stringTwo;
+$joinClosure = parameter('--', 'join', function ($string1, $string2) {
+    return $string1 . $string2;
 });
 
-$minifyClosure = parameter('minify', function() {
+$minifyClosure = parameter('+', 'minify', function() {
     return true;
 });
 
-// Apply the ParameterClosures to the ParameterCluster
-// and associate them each with a prefix.
-$parameters->add('-', $nameClosure);
-$parameters->add('+', $minifyClosure);
-
-// Use the ->addMany function to add multiple closures to the same prefix.
-$parameters->addMany('--', [$inviteClosure, $joinClosure]);
+// Use the ->addMany function to add multiple closures to the ParameterCluster.
+$parameters->addMany([
+    $nameClosure,
+    $minifyClosure,
+    $inviteClosure,
+    $joinClosure,
+]);
 
 
 // Set a default closure for when no prefixes are found that match
@@ -89,8 +90,7 @@ $results = $parameterParser->parse();
 
 // Validate the ParameterParser and if it's invalid, print the usage.
 if (! $parameterParser->isValid()) {
-    echo 'Usage: php test.php -name [name]'.
-    ' -invite [name-1] [name-2] -join [string-1] [string-2] +minify';
+    echo 'Usage: ' . $parameters->getFullUsage();
     echo PHP_EOL;
 } else {
     print_r($results);
