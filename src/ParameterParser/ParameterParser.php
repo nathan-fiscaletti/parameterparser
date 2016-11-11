@@ -51,7 +51,7 @@ class ParameterParser
      *
      * @param array            $argv
      * @param ParameterCluster $parameterCluster
-     * 
+     *
      * @return array
      */
     public function parse($argv = null, ParameterCluster $parameterCluster = null)
