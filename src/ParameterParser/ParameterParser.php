@@ -38,27 +38,27 @@ class ParameterParser
     /**
      * Construct the Parameter Parser using an array of arguments.
      *
-     * @param array         $argv
+     * @param array            $argv
      * @param ParameterCluster $prefixes
      */
-    public function __construct($argv, ParameterCluster $parameterCluster = null)
+    public function __construct($argv = null, ParameterCluster $parameterCluster = null)
     {
-        $this->parameterCluster = new ParameterCluster();
-        if ($parameterCluster != null) {
-            $this->parameterCluster = $parameterCluster;
-        }
-        $this->preloadAliases($argv);
-        $this->preloadParameters($argv);
+        $this->initialize($argv, $parameterCluster);
     }
 
     /**
      * Parse the arguments.
      *
+     * @param array            $argv
+     * @param ParameterCluster $parameterCluster
+     *
      * @return array
      */
-    public function parse()
+    public function parse($argv = null, ParameterCluster $parameterCluster = null)
     {
         $results = [];
+
+        $this->initialize($argv, $parameterCluster);
 
         $i = 0;
         while ($i < count($this->argv)) {
@@ -131,6 +131,26 @@ class ParameterParser
     }
 
     /**
+     * Initialize the ParameterParser with new data.
+     *
+     * @param  array            $argv
+     * @param  ParameterCluster $parameterCluster
+     */
+    private function initialize($argv, $parameterCluster)
+    {
+        if ($parameterCluster != null) {
+            $this->parameterCluster = $parameterCluster;
+            if ($argv != null) {
+                $this->preloadAliases($argv);
+            }
+        }
+
+        if ($argv != null) {
+            $this->preloadParameters($argv);
+        }
+    }
+
+    /**
      * Parses the parameter with the default closure and increments
      * the parameter parser. If '-1' is returned by the default
      * closure, the parameters will be invalidated.
@@ -158,7 +178,7 @@ class ParameterParser
      *
      * @param  string $argv
      */
-    private function preloadAliases($argv)
+    private function preloadAliases()
     {
         foreach (array_keys($this->parameterCluster->prefixes) as $prefix) {
             foreach ($this->parameterCluster->prefixes[$prefix] as $parameterClosure) {
