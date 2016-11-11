@@ -29,6 +29,13 @@ class ParameterParser
     private $valid = true;
 
     /**
+     * The error handler closure.
+     *
+     * @var Closure
+     */
+    private $errorHandler;
+
+    /**
      * Construct the Parameter Parser using an array of arguments.
      *
      * @param array         $argv
@@ -94,6 +101,16 @@ class ParameterParser
     }
 
     /**
+     * Sets an error handler for the ParameterParser.
+     *
+     * @param Closure $closure
+     */
+    public function setErrorHandler(Closure $closure)
+    {
+        $this->errorHandler = $closure;
+    }
+
+    /**
      * Sets the default closure.
      *
      * @param Closure $closure
@@ -147,12 +164,12 @@ class ParameterParser
             foreach ($this->parameterCluster->prefixes[$prefix] as $parameterClosure) {
                 foreach ($parameterClosure->aliases as $prefix => $alias) {
                     $aliasClosure = new ParameterClosure(
+                        $prefix,
                         $alias,
                         $parameterClosure->parameterClosure
                     );
                     $aliasClosure->parent = $parameterClosure;
                     $this->parameterCluster->add(
-                        $prefix,
                         $aliasClosure
                     );
                 }
@@ -263,6 +280,9 @@ class ParameterParser
                 ] = $closure(...$closure_arguments);
             } else {
                 $this->valid = false;
+                if ($this->errorHandler != null) {
+                    $this->errorHandler->call($this, $parameterClosure);
+                }
             }
         } else {
             if (count($closure_arguments) == $argument_count) {
@@ -275,6 +295,9 @@ class ParameterParser
                 ] = $closure(...$closure_arguments);
             } else {
                 $this->valid = false;
+                if ($this->errorHandler != null) {
+                    $this->errorHandler->call($this, $parameterClosure);
+                }
             }
         }
         $i++;
@@ -317,6 +340,9 @@ class ParameterParser
                 ] = $closure(...$closure_arguments);
             } else {
                 $this->valid = false;
+                if ($this->errorHandler != null) {
+                    $this->errorHandler->call($this, $parameterClosure);
+                }
             }
         } else {
             if (count($closure_arguments) > 0) {
@@ -329,6 +355,9 @@ class ParameterParser
                 ] = $closure(...$closure_arguments);
             } else {
                 $this->valid = false;
+                if ($this->errorHandler != null) {
+                    $this->errorHandler->call($this, $parameterClosure);
+                }
             }
         }
     }
