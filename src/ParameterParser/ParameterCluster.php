@@ -3,7 +3,6 @@
 namespace ParameterParser;
 
 use Closure;
-use ReflectionFunction;
 
 class ParameterCluster
 {
@@ -98,31 +97,31 @@ class ParameterCluster
     /**
      * Retrieves the full usage of the ParameterCluster as a string.
      *
-     * @var string $customBinary
-     * @var string $customScript
+     * @param string $customBinary
+     * @param string $customScript
      *
      * @return string
      */
     public function getFullUsage($customBinary = null, $customScript = null)
     {
         $fullUsage = '';
-        
+
         if ($customBinary == null) {
             $fullUsage = 'php ';
         } else {
-            $fullUsage = $customBinary . ' ';
+            $fullUsage = $customBinary.' ';
         }
 
         if ($customScript == null) {
-             $fullUsage .= basename($_SERVER["SCRIPT_NAME"]) . ' ';
+            $fullUsage .= basename($_SERVER['SCRIPT_NAME']).' ';
         } else {
-            $fullUsage .= $customScript . ' ';
+            $fullUsage .= $customScript.' ';
         }
 
         foreach ($this->prefixes as $prefix => $parameters) {
             foreach ($parameters as $parameter) {
                 if ($parameter->parent == null) {
-                    $fullUsage .= $parameter->getUsage() . ' ';
+                    $fullUsage .= $parameter->getUsage().' ';
                 }
             }
         }
