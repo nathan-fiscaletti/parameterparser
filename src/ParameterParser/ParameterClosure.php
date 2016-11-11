@@ -75,11 +75,11 @@ class ParameterClosure
 
         $rFunction = new ReflectionFunction($this->parameterClosure);
         if ($rFunction->isVariadic()) {
-            $usage = $this->prefix . $this->parameterName.
+            $usage = $this->prefix.$this->parameterName.
             ' ['.$rFunction->getParameters()[0]->getName().'...]';
         } else {
-            $usage = $this->prefix . $this->parameterName;
-            for($i = 0;$i<count($rFunction->getParameters());$i++){
+            $usage = $this->prefix.$this->parameterName;
+            for ($i = 0; $i < count($rFunction->getParameters()); $i++) {
                 $usage .= ' ['.
                 $rFunction->getParameters()[$i]->getName().']';
             }
@@ -109,7 +109,7 @@ class ParameterClosure
     public function addAlias($parameterName, $prefix = null)
     {
         if ($prefix == null) {
-            $this->aliases[$this->prefix] = $parameterName;    
+            $this->aliases[$this->prefix] = $parameterName;
         } else {
             $this->aliases[$prefix] = $parameterName;
         }
