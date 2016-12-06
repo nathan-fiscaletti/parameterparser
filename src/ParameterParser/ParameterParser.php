@@ -2,8 +2,8 @@
 
 namespace ParameterParser;
 
-use ReflectionFunction;
 use Closure;
+use ReflectionFunction;
 
 class ParameterParser
 {
@@ -44,8 +44,7 @@ class ParameterParser
     public function __construct(
         $argv = null,
         ParameterCluster $parameterCluster = null
-    )
-    {
+    ) {
         $this->initialize($argv, $parameterCluster);
     }
 
@@ -60,8 +59,7 @@ class ParameterParser
     public function parse(
         $argv = null,
         ParameterCluster $parameterCluster = null
-    )
-    {
+    ) {
         $results = [];
 
         $this->initialize($argv, $parameterCluster);
@@ -74,6 +72,7 @@ class ParameterParser
                 'Missing required argument: '.$valid->parameterName
             );
             $this->valid = false;
+
             return;
         }
 
@@ -157,8 +156,7 @@ class ParameterParser
     private function validateRequiredParameters()
     {
         $ret = true;
-        foreach ($this->parameterCluster->prefixes as $prefix => $parameters)
-        {
+        foreach ($this->parameterCluster->prefixes as $prefix => $parameters) {
             foreach ($parameters as $parameterClosure) {
                 if (
                     ! in_array(

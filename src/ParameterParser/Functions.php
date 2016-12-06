@@ -13,7 +13,7 @@ if (! function_exists('parameter')) {
      * @param  string   $prefix
      * @param  string   $parameterName
      * @param  \Closure $closure
-     * @param  boolean  $required
+     * @param  bool     $required
      *
      * @return \ParameterParser\ParameterClosure
      */
