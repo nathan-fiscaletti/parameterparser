@@ -51,17 +51,25 @@ class ParameterClosure
     public $prefix;
 
     /**
+     * If set to true, the parameter will be required.
+     * @var boolean
+     */
+    public $required = false;
+
+    /**
      * Construct the ParameterClosure with a name and closure.
      *
      * @param string  $prefix
      * @param string  $parameterName
      * @param Closure $parameterClosure
+     * @param boolean $required
      */
-    public function __construct($prefix, $parameterName, Closure $parameterClosure)
+    public function __construct($prefix, $parameterName, Closure $parameterClosure, $required = false)
     {
         $this->parameterName = $parameterName;
         $this->parameterClosure = $parameterClosure;
         $this->prefix = $prefix;
+        $this->required = $required;
     }
 
     /**

@@ -4,6 +4,7 @@
 * [Example 3: Using Variadic Closures (...)](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example3.md)
 * [Example 4: Using Aliases](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example4.md)
 * [Example 5: Using Error Handlers](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example5.md)
+* [Example 6: Using Required Parameters](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example6.md)
 
 ----
 ### Example 2 : Using ParameterCluster to parse more advanced parameters.
@@ -77,7 +78,7 @@ $parameters->setDefault(function ($parameter) {
     // After parsing, use $parameterParser->isValid()
     // to check validity.
     // 
-    // By default, the default closure will always return -1 unless
+    // The default closure will always return -1 unless
     // you directly override it.
     return -1;
 });

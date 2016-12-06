@@ -41,7 +41,10 @@ class ParameterParser
      * @param array            $argv
      * @param ParameterCluster $prefixes
      */
-    public function __construct($argv = null, ParameterCluster $parameterCluster = null)
+    public function __construct(
+        $argv = null,
+        ParameterCluster $parameterCluster = null
+    )
     {
         $this->initialize($argv, $parameterCluster);
     }
@@ -54,11 +57,25 @@ class ParameterParser
      *
      * @return array
      */
-    public function parse($argv = null, ParameterCluster $parameterCluster = null)
+    public function parse(
+        $argv = null,
+        ParameterCluster $parameterCluster = null
+    )
     {
         $results = [];
 
         $this->initialize($argv, $parameterCluster);
+
+        $valid = $this->validateRequiredParameters();
+        if ($valid !== true) {
+            $this->errorHandler->call(
+                $this,
+                $valid,
+                'Missing required argument: '.$valid->parameterName
+            );
+            $this->valid = false;
+            return;
+        }
 
         $i = 0;
         while ($i < count($this->argv)) {
@@ -131,6 +148,36 @@ class ParameterParser
     }
 
     /**
+     * Validates the parameter list by verifying that it contains
+     * all required parameters. Returns the ParameterClosure if a parameter
+     * is missing, else it will return true.
+     *
+     * @return mixed
+     */
+    private function validateRequiredParameters()
+    {
+        $ret = true;
+        foreach ($this->parameterCluster->prefixes as $prefix => $parameters)
+        {
+            foreach ($parameters as $parameterClosure) {
+                if (
+                    ! in_array(
+                        $prefix.$parameterClosure->parameterName,
+                        $this->argv
+                    ) &&
+                    $parameterClosure->required &&
+                    $parameterClosure->parent == null
+                ) {
+                    $ret = $parameterClosure;
+                    break 2;
+                }
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
      * Initialize the ParameterParser with new data.
      *
      * @param  array            $argv
@@ -179,7 +226,9 @@ class ParameterParser
     private function preloadAliases()
     {
         foreach (array_keys($this->parameterCluster->prefixes) as $prefix) {
-            foreach ($this->parameterCluster->prefixes[$prefix] as $parameterClosure) {
+            foreach (
+                $this->parameterCluster->prefixes[$prefix] as $parameterClosure
+            ) {
                 foreach ($parameterClosure->aliases as $prefix => $alias) {
                     $aliasClosure = new ParameterClosure(
                         $prefix,
@@ -285,7 +334,10 @@ class ParameterParser
     ) {
         $current_argument = 0;
         $argument_count = count($rFunction->getParameters());
-        while ($current_argument < $argument_count && count($this->argv) > ($i + 1)) {
+        while (
+            $current_argument < $argument_count &&
+            count($this->argv) > ($i + 1)
+        ) {
             $closure_arguments[] = $this->argv[$i + 1];
             $current_argument += 1;
             $i++;
@@ -299,7 +351,11 @@ class ParameterParser
             } else {
                 $this->valid = false;
                 if ($this->errorHandler != null) {
-                    $this->errorHandler->call($this, $parameterClosure);
+                    $this->errorHandler->call(
+                        $this,
+                        $parameterClosure,
+                        'Invalid argument count for parameter closure.'
+                    );
                 }
             }
         } else {
@@ -314,7 +370,11 @@ class ParameterParser
             } else {
                 $this->valid = false;
                 if ($this->errorHandler != null) {
-                    $this->errorHandler->call($this, $parameterClosure);
+                    $this->errorHandler->call(
+                        $this,
+                        $parameterClosure,
+                        'Invalid argument count for parameter closure.'
+                    );
                 }
             }
         }
@@ -359,7 +419,11 @@ class ParameterParser
             } else {
                 $this->valid = false;
                 if ($this->errorHandler != null) {
-                    $this->errorHandler->call($this, $parameterClosure);
+                    $this->errorHandler->call(
+                        $this,
+                        $parameterClosure,
+                        'Missing argument for parameter closure.'
+                    );
                 }
             }
         } else {
@@ -374,7 +438,11 @@ class ParameterParser
             } else {
                 $this->valid = false;
                 if ($this->errorHandler != null) {
-                    $this->errorHandler->call($this, $parameterClosure);
+                    $this->errorHandler->call(
+                        $this,
+                        $parameterClosure,
+                        'Missing argument for parameter closure.'
+                    );
                 }
             }
         }
