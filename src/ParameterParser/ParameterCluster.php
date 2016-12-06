@@ -128,4 +128,25 @@ class ParameterCluster
 
         return $fullUsage;
     }
+
+    /**
+     * Retrieves an array of all children for a specified ParameterClosure.
+     *
+     * @param  ParameterClosure $parameterClosure
+     * @return array
+     */
+    public function getChildrenFor($parameterClosure)
+    {
+        $ret = [];
+
+        foreach ($this->prefixes as $prefix => $parameters) {
+            foreach ($parameters as $parameter) {
+                if ($parameter->parent == $parameterClosure) {
+                    $ret[] = $parameter;
+                }
+            }
+        }
+
+        return $ret;
+    }
 }
