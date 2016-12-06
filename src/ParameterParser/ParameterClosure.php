@@ -88,8 +88,8 @@ class ParameterClosure
         } else {
             $usage = $this->prefix.$this->parameterName;
             for ($i = 0; $i < count($rFunction->getParameters()); $i++) {
-                $usage .= ' ['.
-                $rFunction->getParameters()[$i]->getName().']';
+                $usage .= ' '.(($this->required) ? '<' : '[').
+                $rFunction->getParameters()[$i]->getName().(($this->required) ? '>' : ']');
             }
         }
 
