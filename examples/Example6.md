@@ -62,6 +62,8 @@ $parameterParser->setErrorHandler(
 $results = $parameterParser->parse();
 
 // Validate the ParameterParser and if it's invalid, print the usage.
+// Note that required parameters will be displayed with <> where as
+// optional parameters will be displayed with [].
 if (! $parameterParser->isValid()) {
     echo 'Full Usage: ' . $parameters->getFullUsage();
     echo PHP_EOL;
