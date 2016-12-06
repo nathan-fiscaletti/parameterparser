@@ -179,7 +179,7 @@ class ParameterParser
                             break;
                         }
                     }
-                    if (!$cFoundForParameter) {
+                    if (! $cFoundForParameter) {
                         if (
                             ! in_array(
                                 $parameterClosure
