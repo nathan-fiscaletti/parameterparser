@@ -173,11 +173,11 @@ class ParameterParser
                                 break;
                             }
                         }
-                        if (!$aliasFound) {
+                        if (! $aliasFound) {
                             $ret = $parameterClosure;
                             break 2;
                         }
-                    } 
+                    }
                 }
             }
         }
