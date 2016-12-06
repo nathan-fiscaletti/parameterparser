@@ -51,17 +51,25 @@ class ParameterClosure
     public $prefix;
 
     /**
+     * If set to true, the parameter will be required.
+     * @var bool
+     */
+    public $required = false;
+
+    /**
      * Construct the ParameterClosure with a name and closure.
      *
      * @param string  $prefix
      * @param string  $parameterName
      * @param Closure $parameterClosure
+     * @param bool    $required
      */
-    public function __construct($prefix, $parameterName, Closure $parameterClosure)
+    public function __construct($prefix, $parameterName, Closure $parameterClosure, $required = false)
     {
         $this->parameterName = $parameterName;
         $this->parameterClosure = $parameterClosure;
         $this->prefix = $prefix;
+        $this->required = $required;
     }
 
     /**
@@ -80,8 +88,8 @@ class ParameterClosure
         } else {
             $usage = $this->prefix.$this->parameterName;
             for ($i = 0; $i < count($rFunction->getParameters()); $i++) {
-                $usage .= ' ['.
-                $rFunction->getParameters()[$i]->getName().']';
+                $usage .= ' '.(($this->required) ? '<' : '[').
+                $rFunction->getParameters()[$i]->getName().(($this->required) ? '>' : ']');
             }
         }
 
