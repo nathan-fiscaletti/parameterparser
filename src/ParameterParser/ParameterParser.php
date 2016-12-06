@@ -158,62 +158,26 @@ class ParameterParser
         $ret = true;
         foreach ($this->parameterCluster->prefixes as $prefix => $parameters) {
             foreach ($parameters as $parameterClosure) {
-                if ($parameterClosure->parent == null) {
-                    $cFoundForParameter = true;
-                    foreach (
-                        $this->parameterCluster->getChildrenFor(
-                            $parameterClosure
-                        ) as $parameterChild
-                    ) {
-                        if (
-                            in_array(
-                                $parameterChild
-                                ->prefix.
-                                $parameterChild
-                                ->parameterName,
-                                $this->argv
-                            ) &&
-                            $parameterChild->parent->required
-                        ) {
-                            $cFoundForParameter = true;
-                            break;
+                if ($parameterClosure->required) {
+                    if (! in_array(
+                        $parameterClosure
+                        ->prefix.
+                        $parameterClosure
+                        ->parameterName,
+                        $this->argv
+                    )) {
+                        $aliasFound = false;
+                        foreach ($parameterClosure->aliases as $prefix => $alias) {
+                            if (in_array($prefix.$alias, $this->argv)) {
+                                $aliasFound = true;
+                                break;
+                            }
                         }
-                    }
-                    if (! $cFoundForParameter) {
-                        if (
-                            ! in_array(
-                                $parameterClosure
-                                ->prefix.
-                                $parameterClosure
-                                ->parameterName,
-                                $this->argv
-                            ) &&
-                            $parameterClosure->parent->required
-                        ) {
+                        if (!$aliasFound) {
                             $ret = $parameterClosure;
                             break 2;
                         }
-                    }
-                } else {
-                    if (
-                        ! in_array(
-                            $parameterClosure
-                            ->prefix.$parameterClosure
-                            ->parameterName,
-                            $this->argv
-                        ) &&
-                        ! in_array(
-                            $parameterClosure->parent
-                            ->prefix.
-                            $parameterClosure->parent
-                            ->parameterName,
-                            $this->argv
-                        ) &&
-                        $parameterClosure->parent->required
-                    ) {
-                        $ret = $parameterClosure->parent;
-                        break 2;
-                    }
+                    } 
                 }
             }
         }
