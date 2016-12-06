@@ -52,7 +52,7 @@ class ParameterClosure
 
     /**
      * If set to true, the parameter will be required.
-     * @var boolean
+     * @var bool
      */
     public $required = false;
 
@@ -62,7 +62,7 @@ class ParameterClosure
      * @param string  $prefix
      * @param string  $parameterName
      * @param Closure $parameterClosure
-     * @param boolean $required
+     * @param bool    $required
      */
     public function __construct($prefix, $parameterName, Closure $parameterClosure, $required = false)
     {
