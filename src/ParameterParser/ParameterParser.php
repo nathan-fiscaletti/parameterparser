@@ -45,6 +45,13 @@ class ParameterParser
         $argv = null,
         ParameterCluster $parameterCluster = null
     ) {
+        $this->parameterCluster = new ParameterCluster();
+        $this->errorHandler = function(
+            ParameterClosure $parameterClosure,
+            $errorMessage
+        ) {
+            // Empty Error Handler
+        };
         $this->initialize($argv, $parameterCluster);
     }
 

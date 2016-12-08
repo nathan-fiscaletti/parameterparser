@@ -84,7 +84,9 @@ class ParameterClosure
         $rFunction = new ReflectionFunction($this->parameterClosure);
         if ($rFunction->isVariadic()) {
             $usage = $this->prefix.$this->parameterName.
-            ' ['.$rFunction->getParameters()[0]->getName().'...]';
+            (($this->required) ? ' <' : ' [').
+            $rFunction->getParameters()[0]->getName().'...'.
+            (($this->required) ? '>' : ']');
         } else {
             $usage = $this->prefix.$this->parameterName;
             for ($i = 0; $i < count($rFunction->getParameters()); $i++) {
