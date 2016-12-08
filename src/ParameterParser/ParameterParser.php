@@ -46,7 +46,7 @@ class ParameterParser
         ParameterCluster $parameterCluster = null
     ) {
         $this->parameterCluster = new ParameterCluster();
-        $this->errorHandler = function(
+        $this->errorHandler = function (
             ParameterClosure $parameterClosure,
             $errorMessage
         ) {
