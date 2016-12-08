@@ -25,7 +25,7 @@ $parameters = new ParameterCluster();
 // Add a ParameterClosure to the ParameterCluster
 $parameters->add(parameter('-', 'name', function ($name) {
     return $name;
-}));
+}, true));
 
 // Create a new parameter parser using the ParameterCluster
 $parameterParser = new ParameterParser($argv, $parameters);
@@ -37,7 +37,7 @@ $results = $parameterParser->parse();
 if (! $parameterParser->isValid()) {
 
     // Since it was not valid, output usage.
-    echo 'Usage: php test.php -name [name]' . PHP_EOL;
+    echo $parameters->getFullUsage() . PHP_EOL;
 
 } else {
 
