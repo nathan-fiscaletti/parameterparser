@@ -62,7 +62,7 @@
 <span class="pl-s1"><span class="pl-c">// Add a ParameterClosure to the ParameterCluster</span></span>
 <span class="pl-s1"><span class="pl-smi">$parameters</span><span class="pl-k">-&gt;</span>add(parameter(<span class="pl-s"><span class="pl-pds">'</span>-<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>name<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-smi">$name</span>) {</span>
 <span class="pl-s1">    <span class="pl-k">return</span> <span class="pl-smi">$name</span>;</span>
-<span class="pl-s1">}));</span>
+<span class="pl-s1">}, <span class="pl-c1">true</span>));</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c">// Create a new parameter parser using the ParameterCluster</span></span>
 <span class="pl-s1"><span class="pl-smi">$parameterParser</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">ParameterParser</span>(<span class="pl-smi">$argv</span>, <span class="pl-smi">$parameters</span>);</span>
@@ -74,7 +74,7 @@
 <span class="pl-s1"><span class="pl-k">if</span> (<span class="pl-k">!</span> <span class="pl-smi">$parameterParser</span><span class="pl-k">-&gt;</span>isValid()) {</span>
 <span class="pl-s1"></span>
 <span class="pl-s1">    <span class="pl-c">// Since it was not valid, output usage.</span></span>
-<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>Usage: php test.php -name [name]<span class="pl-pds">'</span></span> <span class="pl-k">.</span> <span class="pl-c1">PHP_EOL</span>;</span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-smi">$parameters</span><span class="pl-k">-&gt;</span>getFullUsage() <span class="pl-k">.</span> <span class="pl-c1">PHP_EOL</span>;</span>
 <span class="pl-s1"></span>
 <span class="pl-s1">} <span class="pl-k">else</span> {</span>
 <span class="pl-s1"></span>
