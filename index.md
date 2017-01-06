@@ -1,4 +1,7 @@
+# Parameter Parser
 > **Parameter Parser** is a simple library used to parse intricate parameters from an array of strings.
+
+> **Hint**: Parameter Parser is available through [Composer](https://getcomposer.org). `composer require nafisc/parameterparser`.
 
 [![StyleCI](https://styleci.io/repos/73029011/shield?style=flat)](https://styleci.io/repos/73029011)
 [![Latest Stable Version](https://poser.pugx.org/nafisc/parameterparser/v/stable?format=flat)](https://packagist.org/packages/nafisc/parameterparser)
