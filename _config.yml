@@ -2,6 +2,7 @@ title: Parameter Parser
 description: An advanced parameter parser for PHP
 google_analytics: 
 show_downloads: true
+highlighter: rouge
 theme: jekyll-theme-slate
 
 gems:
