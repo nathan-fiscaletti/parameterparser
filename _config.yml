@@ -1,0 +1,8 @@
+title: Parameter Parser
+description: An advanced parameter parser for PHP
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-slate
+
+gems:
+  - jekyll-mentions
