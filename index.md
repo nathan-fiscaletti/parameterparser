@@ -19,6 +19,7 @@
 
 ### Example Usage
 ```php
+<?php
 // Initialize a new ParameterCluster
 $parameters = new ParameterCluster();
 
