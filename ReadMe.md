@@ -17,6 +17,21 @@
 * Custom closures for each command line parameter.
 * Customize the way the command line is parsed.
 
+### Installing Parameter Parser
+To install Parameter Parser as a dependency of your composer project, simply run the following command in your projects root directory.
+```
+composer require nafisc/parameterparser
+```
+
+(For more information on Composer, please see: [Composer: Getting Started](https://getcomposer.org/doc/00-intro.md))
+
+If you are not using Composer for package management, you can still download Parameter Parser and use it as you see fit.
+
+To clone it from GitHub, simply run:
+```
+git clone http://github.com/nathan-fiscaletti/parameterparser`
+```
+
 ### Example Usage
 ```php
 // Initialize a new ParameterCluster
