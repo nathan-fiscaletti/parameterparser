@@ -81,7 +81,7 @@ class ParameterClosure
     {
         $usage = '';
         $aliases = '';
-        
+
         foreach ($this->aliases as $prefix => $alias) {
             $aliases = ($aliases == '') ? ' (' : $aliases;
             $aliases .= ' '.$prefix.$alias;
