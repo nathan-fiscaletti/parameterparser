@@ -80,15 +80,23 @@ class ParameterClosure
     public function getUsage()
     {
         $usage = '';
+        $aliases = '';
+
+        foreach ($this->aliases as $prefix => $alias) {
+            $aliases = ($aliases == '') ? ' (' : $aliases;
+            $aliases .= ' '.$prefix.$alias;
+        }
+
+        $aliases .= ($aliases == '') ? '' : ' )';
 
         $rFunction = new ReflectionFunction($this->parameterClosure);
         if ($rFunction->isVariadic()) {
             $usage = $this->prefix.$this->parameterName.
-            (($this->required) ? ' <' : ' [').
+            $aliases.(($this->required) ? ' <' : ' [').
             $rFunction->getParameters()[0]->getName().'...'.
             (($this->required) ? '>' : ']');
         } else {
-            $usage = $this->prefix.$this->parameterName;
+            $usage = $this->prefix.$this->parameterName.$aliases;
             for ($i = 0; $i < count($rFunction->getParameters()); $i++) {
                 $usage .= ' '.(($this->required) ? '<' : '[').
                 $rFunction->getParameters()[$i]->getName().(($this->required) ? '>' : ']');
