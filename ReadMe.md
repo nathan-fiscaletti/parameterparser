@@ -17,6 +17,7 @@
 * Parse command line parameters.
 * Assign aliases to parameters.
 * Custom closures for each command line parameter.
+* Variadic closure support for arguments taking more than one value.
 * Customize the way the command line is parsed.
 
 ### Example Usage
