@@ -8,7 +8,7 @@
 * Example 7: Halting the Parser
 
 ----
-### Example 6 : Using Required Parameters
+### Example 7 : Halting the Parser
 
 #### Usage: 
     php Test.php -load Test -exec 'some code'
