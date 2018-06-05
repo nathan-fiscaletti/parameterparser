@@ -14,7 +14,7 @@ class ParameterResult
     /**
      * If set to true, the parser will be halted.
      *
-     * @var boolean
+     * @var bool
      */
     private $shouldHalt = false;
 
@@ -59,6 +59,6 @@ class ParameterResult
      */
     public function shouldHalt()
     {
-       return $this->shouldHalt;
+        return $this->shouldHalt;
     }
 }

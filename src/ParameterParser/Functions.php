@@ -46,7 +46,6 @@ if (! function_exists('parameter_result')) {
     }
 }
 
-
 if (! function_exists('parameter_result_and_halt')) {
     /**
      * Create a new ParameterResult object and return it,
