@@ -64,8 +64,12 @@ class ParameterClosure
      * @param Closure $parameterClosure
      * @param bool    $required
      */
-    public function __construct($prefix, $parameterName, Closure $parameterClosure, $required = false)
-    {
+    public function __construct(
+        $prefix,
+        $parameterName,
+        Closure $parameterClosure,
+        $required = false
+    ) {
         $this->parameterName = $parameterName;
         $this->parameterClosure = $parameterClosure;
         $this->prefix = $prefix;

@@ -8,6 +8,11 @@ use ReflectionFunction;
 class ParameterParser
 {
     /**
+     * The constant value that is used to halt the parser.
+     */
+    public const HALT_PARSE = 'parameter_parser_halt_parser';
+
+    /**
      * The array of arguments to use.
      *
      * @var array
@@ -34,6 +39,14 @@ class ParameterParser
      * @var Closure
      */
     private $errorHandler;
+
+    /**
+     * If a parameter halts the execution fot he parser,
+     * it will be stored here.
+     *
+     * @var string
+     */
+    private $haltedBy = null;
 
     /**
      * Construct the Parameter Parser using an array of arguments.
@@ -88,6 +101,7 @@ class ParameterParser
             $parameter = $this->argv[$i];
             if ($this->prefixExists($parameter)) {
                 $closure = $this->getClosure($parameter);
+
                 if ($closure != null) {
                     $prefix = $this->getPrefix($parameter);
                     $closure_arguments = [];
@@ -111,6 +125,31 @@ class ParameterParser
                             $parameter,
                             $rFunction
                         );
+                    }
+
+                    $result_key = substr(
+                        $parameter,
+                        strlen($prefix),
+                        strlen($parameter) - strlen($prefix)
+                    );
+                    $result = $results[$result_key];
+
+                    if (! $result instanceof ParameterResult) {
+                        if ($result == self::HALT_PARSE) {
+                            $this->haltedBy = $this->getParameterClosure($parameter);
+                            unset($results[$result_key]);
+                            break;
+                        }
+                    } else {
+                        if ($result->shouldHalt()) {
+                            $this->haltedBy = $this->getParameterClosure($parameter);
+                            if ($result->isHaltOnly()) {
+                                unset($results[$result_key]);
+                            } else {
+                                $results[$result_key] = $result->getValue();
+                            }
+                            break;
+                        }
                     }
                 } else {
                     $this->respondDefault($i, $results, $parameter);
@@ -151,6 +190,32 @@ class ParameterParser
     public function isValid()
     {
         return $this->valid;
+    }
+
+    /**
+     * Retrieves the parameter that halted the execution
+     * of the parser, if any. If the parser was not halted
+     * null will be returned.
+     *
+     * @return \ParameterParser\ParameterClosure
+     */
+    public function haltedBy()
+    {
+        return $this->haltedBy;
+    }
+
+    /**
+     * Retrieves the name of the parameter that halted the execution
+     * of the parser, if any. If the parser was not halted
+     * null will be returned.
+     *
+     * @return \ParameterParser\ParameterClosure
+     */
+    public function haltedByName()
+    {
+        return ($this->haltedBy == null)
+            ? null
+            : $this->haltedBy->parameterName;
     }
 
     /**
@@ -200,6 +265,8 @@ class ParameterParser
      */
     private function initialize($argv, $parameterCluster)
     {
+        $this->valid = true;
+        $this->haltedBy = null;
         if ($parameterCluster != null) {
             $this->parameterCluster = $parameterCluster;
             if ($argv != null) {
