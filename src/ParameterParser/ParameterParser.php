@@ -127,11 +127,7 @@ class ParameterParser
                         );
                     }
 
-                    $result_key = substr(
-                        $parameter,
-                        strlen($prefix),
-                        strlen($parameter) - strlen($prefix)
-                    );
+                    $result_key = $this->getRealName($parameter);
                     $result = $results[$result_key];
 
                     if (! $result instanceof ParameterResult) {
@@ -570,6 +566,22 @@ class ParameterParser
         }
 
         return $prefix;
+    }
+
+    /**
+     * Retrieves the real name that will be displayed in
+     * the results for a parameter.
+     *
+     * @return string
+     */
+    private function getRealName($param)
+    {
+        $parameterClosure = $this->getParameterClosure($param);
+        if ($parameterClosure->parent != null) {
+            return $parameterClosure->parent->parameterName;
+        } else {
+            return $parameterClosure->parameterName;
+        }
     }
 
     /**
