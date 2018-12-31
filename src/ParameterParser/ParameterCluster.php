@@ -180,7 +180,7 @@ class ParameterCluster
              ->noStyle();
 
             
-        $ansi->text (
+        $ansi->text(
             ($applicationVersion !== null ? ' '.$applicationVersion : '').PHP_EOL
         );
         echo PHP_EOL;
@@ -293,7 +293,7 @@ class ParameterCluster
             $columnNames[] = ucwords($mappedValueName);
         }
 
-        for($i = 0; $i < $parameterCount; $i++) {
+        for ($i = 0; $i < $parameterCount; $i++) {
             $newFormat = "\t";
             foreach ($values as $mappedValueName => $mappedValue) {
                 $newFormat .= '%-'.$mappedValue['longest'].'s ';

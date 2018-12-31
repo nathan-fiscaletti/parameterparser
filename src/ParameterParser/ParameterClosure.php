@@ -88,7 +88,7 @@ class ParameterClosure
     {
         $usage = '';
         if ($withEncapsulation) {
-            $usage = ($this->required ? '' : '[' );
+            $usage = ($this->required ? '' : '[');
         }
         $aliases = ($withAliases ? $this->getAliasUsage() : '');
 
@@ -96,7 +96,7 @@ class ParameterClosure
 
         $usage .= $this->getPropertiesAsString();
 
-        return $usage.($withEncapsulation ? ($this->required ? '' : ']' ) : '');
+        return $usage.($withEncapsulation ? ($this->required ? '' : ']') : '');
     }
 
     /**
