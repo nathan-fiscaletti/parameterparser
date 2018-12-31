@@ -161,6 +161,7 @@ class ParameterCluster
      * @param string $customBinary
      * @param string $customScript
      * @param int    $columnPadding
+     * @param array  $fullUsageStyle
      */
     public function printFullUsage(
         $applicationName,
@@ -169,7 +170,8 @@ class ParameterCluster
         $showRequiredFirst = true,
         $customBinary = null,
         $customScript = null,
-        $columnPadding = 5
+        $columnPadding = 5,
+        $usageStyle = null
     ) {
         // Create Ansi Instance
         $ansi = new \Bramus\Ansi\Ansi();
@@ -205,52 +207,7 @@ class ParameterCluster
         echo PHP_EOL;
 
         $parameterCount = 0;
-        $values = [
-            'parameter' => [
-                // 9 = Length of the word 'Parameter'
-                'longest' => 9 + $columnPadding,
-                'values' => [],
-                'fetch' => function ($parameter) {
-                    return $parameter->prefix.$parameter->parameterName;
-                },
-            ],
-
-            'properties' => [
-                // 10 = Length of the word 'Properties'
-                'longest' => 10 + $columnPadding,
-                'values' => [],
-                'fetch' => function ($parameter) {
-                    return $parameter->getPropertiesAsString();
-                },
-            ],
-
-            'aliases' => [
-                // 7 = Length of the word 'Aliases'
-                'longest' => 7 + $columnPadding,
-                'values' => [],
-                'fetch' => function ($parameter) {
-                    return $parameter->getAliasUsage(false);
-                },
-            ],
-
-            'description' => [
-                // 11 = Length of the word 'Description'
-                'longest' => 11 + $columnPadding,
-                'values' => [],
-                'fetch' => function ($parameter) {
-                    return $parameter->description;
-                },
-            ],
-
-            'required' => [
-                // 8 = Length of the word 'Required'
-                'longest' => 8 + $columnPadding,
-                'values' => [],
-                'fetch' => function ($parameter) {
-                    return $parameter->required ? 'Yes' : '';
-                },
-            ],
-        ];
+        $values = $usageStyle == null ? FullUsageStyle::all() : $usageStyle;
 
         foreach ($this->prefixes as $prefix => $parameters) {
             foreach ($parameters as $parameter) {
