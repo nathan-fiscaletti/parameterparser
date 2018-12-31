@@ -6,7 +6,7 @@ class FullUsageStyle
 {
     /**
      * Retrieve which values from a Parameter
-     * you would like displayed in the 
+     * you would like displayed in the
      * full usage output.
      *
      * @return array
