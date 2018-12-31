@@ -68,8 +68,11 @@ if ($parameterParser->haltedBy() != null) {
 
 // Validate the ParameterParser and if it's invalid, print the usage.
 if (! $parameterParser->isValid()) {
-    echo 'Usage: ' . $parameters->getFullUsage();
-    echo PHP_EOL;
+    $parameters->printFullUsage(
+        "Parameter Parser",
+        "Halting the Parser Example.",
+        "v0.0.1"
+    );
 } else {
     print_r($results);
 }

@@ -6,6 +6,7 @@
 * [Example 5: Using Error Handlers](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example5.md)
 * Example 6: Using Required Parameters
 * [Example 7: Halting the Parser](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example7.md)
+* [Example 8: Printing Usage](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example8.md)
 
 ----
 ### Example 6 : Using Required Parameters
@@ -14,8 +15,23 @@
     php test.php -call 800-123-4567
 #### Output: 
     Error -> 'Missing required argument: name' thrown on argument `name`.
-    Usage: -name [name]
-    Full Usage: php test.php -name [name] -call [number]
+    Usage: -name <name>
+    
+    Parameter Parser v0.0.1
+    
+    Description:
+    
+    	Using Required Parameters Example.
+    
+    Usage:
+    
+    	php test.php -name <name> [-call <number>]
+    
+    Parameters:
+    
+    	Parameter      Properties      Aliases      Description      Required
+    	-name          <name>                                        Yes
+    	-call          <number>
 #### Code:
 ```php
 // Create a new ParameterCluster.
@@ -66,8 +82,11 @@ $results = $parameterParser->parse();
 // Note that required parameters will be displayed with <> where as
 // optional parameters will be displayed with [].
 if (! $parameterParser->isValid()) {
-    echo 'Full Usage: ' . $parameters->getFullUsage();
-    echo PHP_EOL;
+    $parameters->printFullUsage(
+        "Parameter Parser",
+        "Using Required Parameters Example.",
+        "v0.0.1"
+    );
 } else {
     print_r($results);
 }

@@ -21,6 +21,7 @@
         ]
     },
     "require": {
-        "php": ">=7.0"
+        "php": ">=7.0",
+        "bramus/ansi-php": "^3.0"
     }
 }

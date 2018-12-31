@@ -6,6 +6,7 @@
 * [Example 5: Using Error Handlers](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example5.md)
 * [Example 6: Using Required Parameters](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example6.md)
 * [Example 7: Halting the Parser](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example7.md)
+* [Example 8: Printing Usage](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example8.md)
 
 ----
 ### Example 3 : Using ParameterCluster and the splat operator `...` (aka. Variadic Closures)
@@ -73,8 +74,11 @@ $results = $parameterParser->parse();
 
 // Validate the ParameterParser and if it's invalid, print the usage.
 if (! $parameterParser->isValid()) {
-    echo 'Usage: ' . $parameters->getFullUsage();
-    echo PHP_EOL;
+    $parameters->printFullUsage(
+        "Parameter Parser",
+        "Using ParameterCluster and the splat operator `...` (aka. Variadic Closures) Example.",
+        "v0.0.1"
+    );
 } else {
     print_r($results);
 }
