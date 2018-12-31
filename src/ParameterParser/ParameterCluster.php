@@ -179,7 +179,6 @@ class ParameterCluster
              ->text(PHP_EOL.$applicationName)
              ->noStyle();
 
-            
         $ansi->text(
             ($applicationVersion !== null ? ' '.$applicationVersion : '').PHP_EOL
         );
