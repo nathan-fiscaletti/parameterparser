@@ -3,7 +3,7 @@
 namespace ParameterParser;
 
 use Closure;
-use \Bramus\Ansi\ControlSequences\EscapeSequences\Enums\SGR;
+use Bramus\Ansi\ControlSequences\EscapeSequences\Enums\SGR;
 
 class ParameterCluster
 {
@@ -104,7 +104,7 @@ class ParameterCluster
      *
      * @return string
      */
-    public function getUsage (
+    public function getUsage(
         $showRequiredFirst = true,
         $customBinary = null,
         $customScript = null
@@ -125,7 +125,7 @@ class ParameterCluster
 
         foreach ($this->prefixes as $prefix => $parameters) {
             if ($showRequiredFirst) {
-                usort($parameters, function($p1, $p2) {
+                usort($parameters, function ($p1, $p2) {
                     if ($p1->required && $p2->required) {
                         return 0;
                     }
@@ -153,16 +153,16 @@ class ParameterCluster
     /**
      * Print the full usage along with each commands
      * individual usage and descripition.
-     * 
+     *
      * @param string $applicationName
      * @param string $description
      * @param string $applicationVersion
      * @param bool   $showRequiredFirst
-     * @param string $customBinary 
+     * @param string $customBinary
      * @param string $customScript
      * @param int    $columnPadding
      */
-    public function printFullUsage (
+    public function printFullUsage(
         $applicationName,
         $description = null,
         $applicationVersion = null,
@@ -174,26 +174,26 @@ class ParameterCluster
         // Create Ansi Instance
         $ansi = new \Bramus\Ansi\Ansi();
 
-        $ansi->color(array(SGR::COLOR_FG_BLUE_BRIGHT))
+        $ansi->color([SGR::COLOR_FG_BLUE_BRIGHT])
              ->bold()
              ->text(PHP_EOL.$applicationName)
              ->noStyle();
 
             
         $ansi->text (
-            ($applicationVersion !== null ? ' ' . $applicationVersion : '').PHP_EOL
+            ($applicationVersion !== null ? ' '.$applicationVersion : '').PHP_EOL
         );
         echo PHP_EOL;
 
         if ($description != null) {
-            $ansi->color(array(SGR::COLOR_FG_WHITE_BRIGHT))
+            $ansi->color([SGR::COLOR_FG_BLUE_BRIGHT])
                  ->bold()
                  ->text('Description:')
                  ->noStyle();
             echo PHP_EOL.PHP_EOL."\t".$description.PHP_EOL.PHP_EOL;
         }
 
-        $ansi->color(array(SGR::COLOR_FG_WHITE_BRIGHT))
+        $ansi->color([SGR::COLOR_FG_BLUE_BRIGHT])
                  ->bold()
                  ->text('Usage:')
                  ->noStyle();
@@ -204,7 +204,7 @@ class ParameterCluster
                  $customScript
              ).PHP_EOL;
         echo PHP_EOL;
-        
+
         $parameterCount = 0;
         $values = [
             'parameter' => [
@@ -213,7 +213,7 @@ class ParameterCluster
                 'values' => [],
                 'fetch' => function ($parameter) {
                     return $parameter->prefix.$parameter->parameterName;
-                }
+                },
             ],
 
             'properties' => [
@@ -222,7 +222,7 @@ class ParameterCluster
                 'values' => [],
                 'fetch' => function ($parameter) {
                     return $parameter->getPropertiesAsString();
-                }
+                },
             ],
 
             'aliases' => [
@@ -231,16 +231,16 @@ class ParameterCluster
                 'values' => [],
                 'fetch' => function ($parameter) {
                     return $parameter->getAliasUsage(false);
-                }
+                },
             ],
 
             'description' => [
                 // 11 = Length of the word 'Description'
-                'longest' => 11 + $columnPadding, 
+                'longest' => 11 + $columnPadding,
                 'values' => [],
                 'fetch' => function ($parameter) {
                     return $parameter->description;
-                }
+                },
             ],
 
             'required' => [
@@ -249,8 +249,8 @@ class ParameterCluster
                 'values' => [],
                 'fetch' => function ($parameter) {
                     return $parameter->required ? 'Yes' : '';
-                }
-            ]
+                },
+            ],
         ];
 
         foreach ($this->prefixes as $prefix => $parameters) {
@@ -261,12 +261,12 @@ class ParameterCluster
                         $nVal = $mappedValue['fetch']($parameter);
                         $nValSize = strlen($nVal);
                         if (
-                            $nValSize + 
-                            $columnPadding 
+                            $nValSize +
+                            $columnPadding
                             > $values[$mappedValueName]['longest']
                         ) {
-                            $values[$mappedValueName]['longest'] = 
-                                $nValSize + 
+                            $values[$mappedValueName]['longest'] =
+                                $nValSize +
                                 $columnPadding;
                         }
 
@@ -276,7 +276,7 @@ class ParameterCluster
             }
         }
 
-        $ansi->color(array(SGR::COLOR_FG_WHITE_BRIGHT))
+        $ansi->color([SGR::COLOR_FG_BLUE_BRIGHT])
                  ->bold()
                  ->text('Parameters:')
                  ->noStyle();
@@ -285,7 +285,7 @@ class ParameterCluster
         $headerFormat = "\t";
         $columnNames = [];
 
-        $parameterFormat = "";
+        $parameterFormat = '';
         $parameterValues = [];
 
         foreach ($values as $mappedValueName => $mappedValue) {
@@ -293,7 +293,7 @@ class ParameterCluster
             $columnNames[] = ucwords($mappedValueName);
         }
 
-        for($i=0;$i<$parameterCount;$i++) {
+        for($i = 0; $i < $parameterCount; $i++) {
             $newFormat = "\t";
             foreach ($values as $mappedValueName => $mappedValue) {
                 $newFormat .= '%-'.$mappedValue['longest'].'s ';

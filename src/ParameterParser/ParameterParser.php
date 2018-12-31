@@ -144,7 +144,7 @@ class ParameterParser
     /**
      * Validates the parameters passed to the initializer
      * and continues the parse if it sees fit.
-     * 
+     *
      * @return array
      */
     private function checkValidityAndContinueParse()
@@ -166,7 +166,7 @@ class ParameterParser
 
     /**
      * Parse every element in the loaded parameters.
-     * 
+     *
      * @return array
      */
     private function parseEvery()
@@ -186,14 +186,14 @@ class ParameterParser
 
     /**
      * Parse a single parameter and increment the parser.
-     * 
+     *
      * If this function returns 'false', it means that
      * the parse was halted by one of the parameters.
-     * 
+     *
      * @param int    &$i
      * @param string  $parameter
      * @param array  &$results
-     * 
+     *
      * @return bool
      */
     private function parseSingle(&$i, $parameter, &$results)
@@ -233,6 +233,7 @@ class ParameterParser
                     if ($result == self::HALT_PARSE) {
                         $this->haltedBy = $this->getParameterClosure($parameter);
                         unset($results[$result_key]);
+
                         return false;
                     }
                 } else {
@@ -243,6 +244,7 @@ class ParameterParser
                         } else {
                             $results[$result_key] = $result->getValue();
                         }
+
                         return false;
                     }
                 }
