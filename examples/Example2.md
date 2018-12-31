@@ -72,6 +72,9 @@ $parameters->addMany([
 // When you initialize the ParameterParser with the ParameterCluster,
 // the default function gets overridden with the default function 
 // of the new ParameterCluster. 
+//
+// See: https://bit.ly/2AmIChU
+//
 $parameters->setDefault(function ($parameter) {
     // Always return -1 if no valid parameter is found.
     // This will invalidate the parameters.
