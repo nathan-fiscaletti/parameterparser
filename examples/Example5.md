@@ -6,6 +6,7 @@
 * Example 5: Using Error Handlers
 * [Example 6: Using Required Parameters](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example6.md)
 * [Example 7: Halting the Parser](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example7.md)
+* [Example 8: Printing Usage](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example8.md)
 
 ----
 ### Example 5 : Using Error Handlers
@@ -14,8 +15,22 @@
     php test.php -name
 #### Output:
     Error -> 'Invalid argument count for parameter closure.' thrown on argument `name`.
-    Usage: -name [name]
-    Full Usage: php test.php -name [name]
+    Usage: [-name <name>]
+    
+    Parameter Parser v0.0.1
+    
+    Description:
+    
+    	Using Error Handlers Example.
+    
+    Usage:
+    
+    	php test.php [-name <name>]
+    
+    Parameters:
+    
+    	Parameter      Properties      Aliases      Description                    Required
+    	-name          <name>                       Displays the name passed.
 #### Code:
 ```php
 // Create a new ParameterCluster.
@@ -75,8 +90,11 @@ $results = $parameterParser->parse();
 
 // Validate the ParameterParser and if it's invalid, print the usage.
 if (! $parameterParser->isValid()) {
-    echo 'Full Usage: ' . $parameters->getFullUsage();
-    echo PHP_EOL;
+    $parameters->printFullUsage(
+        "Parameter Parser",
+        "Using Error Handlers Example.",
+        "v0.0.1"
+    );
 } else {
     print_r($results);
 }

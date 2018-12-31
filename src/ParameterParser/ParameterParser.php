@@ -80,82 +80,9 @@ class ParameterParser
         $argv = null,
         ParameterCluster $parameterCluster = null
     ) {
-        $results = [];
-
         $this->initialize($argv, $parameterCluster);
 
-        $valid = $this->validateRequiredParameters();
-        if ($valid !== true) {
-            $this->errorHandler->call(
-                $this,
-                $valid,
-                'Missing required argument: '.$valid->parameterName
-            );
-            $this->valid = false;
-
-            return;
-        }
-
-        $i = 0;
-        while ($i < count($this->argv)) {
-            $parameter = $this->argv[$i];
-            if ($this->prefixExists($parameter)) {
-                $closure = $this->getClosure($parameter);
-
-                if ($closure != null) {
-                    $prefix = $this->getPrefix($parameter);
-                    $closure_arguments = [];
-                    $rFunction = new ReflectionFunction($closure);
-                    if ($rFunction->isVariadic()) {
-                        $this->parseVariadicParameter(
-                            $i,
-                            $results,
-                            $closure,
-                            $closure_arguments,
-                            $prefix,
-                            $parameter
-                        );
-                    } else {
-                        $this->parseUniadicParameter(
-                            $i,
-                            $results,
-                            $closure,
-                            $closure_arguments,
-                            $prefix,
-                            $parameter,
-                            $rFunction
-                        );
-                    }
-
-                    $result_key = $this->getRealName($parameter);
-                    $result = $results[$result_key];
-
-                    if (! $result instanceof ParameterResult) {
-                        if ($result == self::HALT_PARSE) {
-                            $this->haltedBy = $this->getParameterClosure($parameter);
-                            unset($results[$result_key]);
-                            break;
-                        }
-                    } else {
-                        if ($result->shouldHalt()) {
-                            $this->haltedBy = $this->getParameterClosure($parameter);
-                            if ($result->isHaltOnly()) {
-                                unset($results[$result_key]);
-                            } else {
-                                $results[$result_key] = $result->getValue();
-                            }
-                            break;
-                        }
-                    }
-                } else {
-                    $this->respondDefault($i, $results, $parameter);
-                }
-            } else {
-                $this->respondDefault($i, $results, $parameter);
-            }
-        }
-
-        return $results;
+        return $this->checkValidityAndContinueParse();
     }
 
     /**
@@ -212,6 +139,121 @@ class ParameterParser
         return ($this->haltedBy == null)
             ? null
             : $this->haltedBy->parameterName;
+    }
+
+    /**
+     * Validates the parameters passed to the initializer
+     * and continues the parse if it sees fit.
+     * 
+     * @return array
+     */
+    private function checkValidityAndContinueParse()
+    {
+        $valid = $this->validateRequiredParameters();
+        if ($valid !== true) {
+            $this->errorHandler->call(
+                $this,
+                $valid,
+                'Missing required argument: '.$valid->parameterName
+            );
+            $this->valid = false;
+
+            return [];
+        }
+
+        return $this->parseEvery();
+    }
+
+    /**
+     * Parse every element in the loaded parameters.
+     * 
+     * @return array
+     */
+    private function parseEvery()
+    {
+        $results = [];
+
+        $i = 0;
+        while ($i < count($this->argv)) {
+            $parameter = $this->argv[$i];
+            if ($this->parseSingle($i, $parameter, $results) === false) {
+                break;
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Parse a single parameter and increment the parser.
+     * 
+     * If this function returns 'false', it means that
+     * the parse was halted by one of the parameters.
+     * 
+     * @param int    &$i
+     * @param string  $parameter
+     * @param array  &$results
+     * 
+     * @return bool
+     */
+    private function parseSingle(&$i, $parameter, &$results)
+    {
+        if ($this->prefixExists($parameter)) {
+            $closure = $this->getClosure($parameter);
+
+            if ($closure != null) {
+                $prefix = $this->getPrefix($parameter);
+                $closure_arguments = [];
+                $rFunction = new ReflectionFunction($closure);
+                if ($rFunction->isVariadic()) {
+                    $this->parseVariadicParameter(
+                        $i,
+                        $results,
+                        $closure,
+                        $closure_arguments,
+                        $prefix,
+                        $parameter
+                    );
+                } else {
+                    $this->parseUniadicParameter(
+                        $i,
+                        $results,
+                        $closure,
+                        $closure_arguments,
+                        $prefix,
+                        $parameter,
+                        $rFunction
+                    );
+                }
+
+                $result_key = $this->getRealName($parameter);
+                $result = $results[$result_key];
+
+                if (! $result instanceof ParameterResult) {
+                    if ($result == self::HALT_PARSE) {
+                        $this->haltedBy = $this->getParameterClosure($parameter);
+                        unset($results[$result_key]);
+                        return false;
+                    }
+                } else {
+                    if ($result->shouldHalt()) {
+                        $this->haltedBy = $this->getParameterClosure($parameter);
+                        if ($result->isHaltOnly()) {
+                            unset($results[$result_key]);
+                        } else {
+                            $results[$result_key] = $result->getValue();
+                        }
+                        return false;
+                    }
+                }
+            } else {
+                $this->respondDefault($i, $results, $parameter);
+            }
+        } else {
+            $this->respondDefault($i, $results, $parameter);
+        }
+
+        return true;
     }
 
     /**

@@ -79,35 +79,73 @@ class ParameterClosure
     /**
      * Gets the usage of the ParameterClosure as string.
      *
+     * @param bool $withEncapsulation
+     * @param bool $withAliases
+     * 
      * @return string
      */
-    public function getUsage()
+    public function getUsage($withEncapsulation = true, $withAliases = true)
     {
         $usage = '';
-        $aliases = '';
-
-        foreach ($this->aliases as $prefix => $alias) {
-            $aliases = ($aliases == '') ? ' (' : $aliases;
-            $aliases .= ' '.$prefix.$alias;
+        if ($withEncapsulation) {
+            $usage = ($this->required?'':'[');
         }
+        $aliases = ($withAliases ? $this->getAliasUsage() : '');
 
-        $aliases .= ($aliases == '') ? '' : ' )';
+        $usage .= $this->prefix.$this->parameterName.$aliases.' ';
+
+        $usage .= $this->getPropertiesAsString();
+
+        return $usage.($withEncapsulation?($this->required?'':']'):'');
+    }
+
+    /**
+     * Retrieve the properties for this parameter as a string.
+     * 
+     * @return string
+     */
+    public function getPropertiesAsString()
+    {
+        $result = '';
 
         $rFunction = new ReflectionFunction($this->parameterClosure);
         if ($rFunction->isVariadic()) {
-            $usage = $this->prefix.$this->parameterName.
-            $aliases.(($this->required) ? ' <' : ' [').
-            $rFunction->getParameters()[0]->getName().'...'.
-            (($this->required) ? '>' : ']');
+            $result.= '<'.
+            $rFunction->getParameters()[0]->getName().', ...>';
         } else {
-            $usage = $this->prefix.$this->parameterName.$aliases;
             for ($i = 0; $i < count($rFunction->getParameters()); $i++) {
-                $usage .= ' '.(($this->required) ? '<' : '[').
-                $rFunction->getParameters()[$i]->getName().(($this->required) ? '>' : ']');
+                $result .= ($result == '' ? '' : ' ').'<'.
+                $rFunction->getParameters()[$i]->getName().
+                '>';
             }
         }
 
-        return $usage;
+        return $result;
+    }
+
+    /**
+     * Retrieve the alias usage as a String.
+     * 
+     * @return string
+     */
+    public function getAliasUsage($withEncapsulation = true)
+    {
+        $aliases = '';
+
+        foreach ($this->aliases as $prefix => $alias) {
+            if ($withEncapsulation) {
+                $aliases = ($aliases == '') ? ' (' : $aliases;
+                $aliases .= ' '.$prefix.$alias;
+            } else {
+                $aliases = ($aliases == '') ? $prefix.$alias : $aliases.', '.$prefix.$alias;
+            }
+        }
+
+        if ($withEncapsulation) {
+            $aliases .= ($aliases == '') ? '' : ' )';
+        }
+
+        return $aliases;
     }
 
     /**
@@ -124,6 +162,8 @@ class ParameterClosure
      * Add an alias and associate it with a prefix.
      * If no prefix is defined, the default for
      * the cluster will be used.
+     * 
+     * Only one alias can exist per prefix per parameter.
      *
      * @param string $parameterName
      * @param string $prefix
