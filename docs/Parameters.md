@@ -40,8 +40,8 @@ Once you have created a Parameter you can configure it using the following optio
 
 |Function|Effect|
 |---|---|
-|`->setRequired(bool)`|Makes the Parameter a Required Parameter.|
-|`->setDescription(string)`|Sets the description for the Parameter. This is used when displaying Parameter usage from a [Cluster](./Clusters.md))|
-|`->addAlias(string, string)`|Adds an Alias for this Parameter. The first parameter should be the Prefix for the Alias, and the second parameter should be the name of the Alias. _Note: Only one alias can exist per prefix per Parameter._ |
+|`setRequired(bool)`|Makes the Parameter a Required Parameter.|
+|`setDescription(string)`|Sets the description for the Parameter. This is used when displaying Parameter usage from a [Cluster](./Clusters.md))|
+|`addAlias(string, string)`|Adds an Alias for this Parameter. The first parameter should be the Prefix for the Alias, and the second parameter should be the name of the Alias. _Note: Only one alias can exist per prefix per Parameter._ |
 
 > The Parameter object implements the [Fluent](https://en.wikipedia.org/wiki/Fluent_interface) design pattern, so you can chain these functions.

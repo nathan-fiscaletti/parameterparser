@@ -18,15 +18,15 @@ To add a Parameter to a Cluster, first [create your parameter](./Parameters.md),
 
 |Function|Effect|
 |---|---|
-|`->add(Parameter)`|Adds a Parameter to the Cluster.|
-|`->addMany(array[Parameter])`|Adds multiple Parameters to the Cluster at once.|
+|`add(Parameter)`|Adds a Parameter to the Cluster.|
+|`addMany(array[Parameter])`|Adds multiple Parameters to the Cluster at once.|
 
 
 You can also remove a Parameter from the cluster using one of the following functions:
 
 |Function|Effect|
 |---|---|
-|`->remove(string, string)`|Removes a Parameter from the cluster. The first argument is the Prefix for the Parameter and the second is the name of the Parameter.|
+|`remove(string, string)`|Removes a Parameter from the cluster. The first argument is the Prefix for the Parameter and the second is the name of the Parameter.|
 
 ## Setting the Default Handler
 
