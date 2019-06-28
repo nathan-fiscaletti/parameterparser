@@ -1,6 +1,6 @@
 ## Index:
-* Example 1: Using ParameterParser
-* [Example 2: Using ParameterCluster](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md)
+* Example 1: Using Parameter Parser
+* [Example 2: Using a Cluster](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md)
 * [Example 3: Using Variadic Closures (...)](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example3.md)
 * [Example 4: Using Aliases](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example4.md)
 * [Example 5: Using Error Handlers](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example5.md)
@@ -9,7 +9,7 @@
 * [Example 8: Printing Usage](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example8.md)
 
 ----
-### Example 1 : Using the ParameterParser to parse simple parameters.
+### Example 1 : Using Parameter Parser to parse simple parameters.
 
 #### Usage: 
     php test.php silent color
@@ -22,11 +22,11 @@
 #### Code:
 ```php
 // Create a new parameter parser using the default PHP arguments.
-$parameterParser = new ParameterParser($argv);
+$parser = new Parser($argv);
 
-// Set the default closure of ParameterParser
+// Set the default closure of Parser
 // In this example, we will just have two parameters that can be set.
-$parameterParser->setDefault(function ($parameter) {
+$parser->setDefault(function ($parameter) {
     switch($parameter) {
         case 'color' : {
             return true;
@@ -39,7 +39,7 @@ $parameterParser->setDefault(function ($parameter) {
         // Always return -1 if no valid parameter is found.
         // This will invalidate the parameters.
         // 
-        // After parsing, use $parameterParser->isValid()
+        // After parsing, use $parser->isValid()
         // to check validity.
         // 
         // The default closure will always return -1 unless
@@ -51,10 +51,10 @@ $parameterParser->setDefault(function ($parameter) {
 });
 
 // Parse the parameters using the parameter parser.
-$results = $parameterParser->parse();
+$results = $parser->parse();
 
-// Validate the ParameterParser and if it's invalid, print the usage.
-if (! $parameterParser->isValid()) {
+// Validate the Parser and if it's invalid, print the usage.
+if (! $parser->isValid()) {
     echo 'Usage: php test.php [color] [silent]';
     echo PHP_EOL;
 } else {

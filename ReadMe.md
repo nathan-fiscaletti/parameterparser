@@ -9,7 +9,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/nafisc/parameterparser/v/unstable?format=flat)](https://packagist.org/packages/nafisc/parameterparser)
 [![License](https://poser.pugx.org/nafisc/parameterparser/license?format=flat)](https://packagist.org/packages/nafisc/parameterparser)
 
-[Advanced Code Examples](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example1.md)
+[Documentation](./docs/) - [Advanced Code Examples](./examples/Example1.md)
 
 ### Features
 * Parse command line parameters.
@@ -20,25 +20,34 @@
 
 ### Example Usage
 ```php
-// Initialize a new ParameterCluster
-$parameters = new ParameterCluster();
+// Initialize a new Cluster
+$parameters = new Cluster();
 
-// Add a ParameterClosure to the ParameterCluster
-$parameters->add(parameter('-', 'name', function ($name) {
+// Add a Parameter to the Cluster
+$parameter = parameter('-', 'name', function ($name) {
     return $name;
-}, true));
+});
 
-// Create a new parameter parser using the ParameterCluster
-$parameterParser = new ParameterParser($argv, $parameters);
+$parameter->setRequired(true)
+          ->setDescription('Your name.');
 
-// Parse the parameters using the ParameterParser.
-$results = $parameterParser->parse();
+$parameters->add($parameter);
+
+// Create a new Parser using the Cluster
+$parser = new Parser($argv, $parameters);
+
+// Parse the parameters using the Parser.
+$results = $parser->parse();
 
 // Verify that the parameters were valid after parsing.
-if (! $parameterParser->isValid()) {
+if (! $parser->isValid()) {
 
     // Since it was not valid, output usage.
-    echo $parameters->getFullUsage() . PHP_EOL;
+    $parameters->printFullUsage(
+        "Parameter Parser",
+        "An advanced parameter parser for PHP",
+        "v1.0.0"
+    );
 
 } else {
 

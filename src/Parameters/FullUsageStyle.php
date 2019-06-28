@@ -1,6 +1,6 @@
 <?php
 
-namespace ParameterParser;
+namespace Parameters;
 
 class FullUsageStyle
 {
@@ -9,11 +9,13 @@ class FullUsageStyle
      * you would like displayed in the
      * full usage output.
      *
+     * @param int $columnPadding
+     * 
      * @return array
      */
-    public static function all()
+    public static function all($columnPadding)
     {
-        return self::allExcept([]);
+        return self::allExcept([], $columnPadding);
     }
 
     /**
@@ -24,10 +26,11 @@ class FullUsageStyle
      * Any key in the $except array will be excluded.
      *
      * @param array $except
+     * @param int $columnPadding
      *
      * @return array
      */
-    public static function allExcept($except)
+    public static function allExcept($except, $columnPadding)
     {
         $result = [
             'parameter' => [
@@ -35,7 +38,7 @@ class FullUsageStyle
                 'longest' => 9 + $columnPadding,
                 'values' => [],
                 'fetch' => function ($parameter) {
-                    return $parameter->prefix.$parameter->parameterName;
+                    return $parameter->prefix.$parameter->name;
                 },
             ],
 

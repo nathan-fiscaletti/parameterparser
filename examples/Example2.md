@@ -1,6 +1,6 @@
 ## Index:
-* [Example 1: Using ParameterParser](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example1.md)
-* Example 2: Using ParameterCluster
+* [Example 1: Using Parameter Parser](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example1.md)
+* Example 2: Using a Cluster
 * [Example 3: Using Variadic Closures (...)](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example3.md)
 * [Example 4: Using Aliases](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example4.md)
 * [Example 5: Using Error Handlers](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example5.md)
@@ -9,7 +9,7 @@
 * [Example 8: Printing Usage](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example8.md)
 
 ----
-### Example 2 : Using ParameterCluster to parse more advanced parameters.
+### Example 2 : Using a Cluster to parse more advanced parameters.
 
 #### Usage: 
     php test.php -name "Nathan Fiscaletti" +minify --join 'foo bar' apples --invite 'Mr. Foo' 'Mr. Bar'
@@ -27,32 +27,32 @@
     )
 #### Code:
 ```php
-// Create a new ParameterCluster.
-$parameters = new ParameterCluster;
+// Create a new Cluster.
+$parameters = new Cluster;
 
 // Create new closures for each parameter.
-$nameClosure = parameter('-', 'name', function ($name) {
+$name = parameter('-', 'name', function ($name) {
     return $name;
 });
 
-$inviteClosure = parameter('--', 'invite', function ($name1, $name2) {
+$invite = parameter('--', 'invite', function ($name1, $name2) {
     return [$name1, $name2];
 });
 
-$joinClosure = parameter('--', 'join', function ($string1, $string2) {
+$join = parameter('--', 'join', function ($string1, $string2) {
     return $string1 . $string2;
 });
 
-$minifyClosure = parameter('+', 'minify', function() {
+$minify = parameter('+', 'minify', function() {
     return true;
 });
 
-// Use the ->addMany function to add multiple closures to the ParameterCluster.
+// Use the ->addMany function to add multiple closures to the Cluster.
 $parameters->addMany([
-    $nameClosure,
-    $minifyClosure,
-    $inviteClosure,
-    $joinClosure,
+    $name,
+    $minify,
+    $invite,
+    $join,
 ]);
 
 
@@ -62,17 +62,17 @@ $parameters->addMany([
 // This could be used to toggle certain things on or off, etc.
 // In this example, we'll just output an error.
 // 
-// Note: When using a ParameterCluster you cannot use the setDefault()
-// function of ParameterParser unless you execute the parse() function
-// after initializing the ParameterParser with the ParameterCluster.
+// Note: When using a Cluster you cannot use the setDefault()
+// function of Parser unless you execute the parse() function
+// after initializing the Parser with the Cluster.
 // 
-// This is because the setDefault function of ParameterParser simply
+// This is because the setDefault function of Parser simply
 // forwards the closure parameter to the setDefault function of the
-// ParameterCluster property of the ParameterParser.
+// Cluster property of the Parser.
 // 
-// When you initialize the ParameterParser with the ParameterCluster,
+// When you initialize the Parser with the Cluster,
 // the default function gets overridden with the default function 
-// of the new ParameterCluster. 
+// of the new Cluster. 
 //
 // See: https://bit.ly/2AmIChU
 //
@@ -80,7 +80,7 @@ $parameters->setDefault(function ($parameter) {
     // Always return -1 if no valid parameter is found.
     // This will invalidate the parameters.
     // 
-    // After parsing, use $parameterParser->isValid()
+    // After parsing, use $parser->isValid()
     // to check validity.
     // 
     // The default closure will always return -1 unless
@@ -88,14 +88,14 @@ $parameters->setDefault(function ($parameter) {
     return -1;
 });
 
-// Create a ParameterParser using the ParameterCluster.
-$parameterParser = new ParameterParser($argv, $parameters);
+// Create a Parser using the Cluster.
+$parser = new Parser($argv, $parameters);
 
-// Parse the arguments using the ParameterCluster.
-$results = $parameterParser->parse();
+// Parse the arguments using the Cluster.
+$results = $parser->parse();
 
 // Validate the ParameterParser and if it's invalid, print the usage.
-if (! $parameterParser->isValid()) {
+if (! $parser->isValid()) {
     $parameters->printFullUsage(
         "Parameter Parser",
         "Using ParameterCluster to parse more advanced parameters Example.",

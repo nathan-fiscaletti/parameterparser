@@ -1,8 +1,8 @@
 <?php
 
-namespace ParameterParser;
+namespace Parameters;
 
-class ParameterResult
+class Result
 {
     /**
      * Resulting value.
@@ -32,7 +32,7 @@ class ParameterResult
     }
 
     /**
-     * Retrieve the value of the ParameterResult.
+     * Retrieve the value of the Result.
      *
      * @return mixed
      */
@@ -42,13 +42,13 @@ class ParameterResult
     }
 
     /**
-     * Check if this ParameterResult should ONLY halt the parser.
+     * Check if this Result should ONLY halt the parser.
      *
      * @return bool
      */
     public function isHaltOnly()
     {
-        return $this->value == ParameterParser::HALT_PARSE;
+        return $this->value == Parser::HALT_PARSE;
     }
 
     /**
