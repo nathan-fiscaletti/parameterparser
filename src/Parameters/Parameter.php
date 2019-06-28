@@ -1,25 +1,25 @@
 <?php
 
-namespace ParameterParser;
+namespace Parameters;
 
 use Closure;
 use ReflectionFunction;
 
-class ParameterClosure
+class Parameter
 {
     /**
      * The name of the parameter.
      *
      * @var string
      */
-    public $parameterName;
+    public $name;
 
     /**
      * The closure to associate with the parameter.
      *
      * @var Closure
      */
-    public $parameterClosure;
+    public $closure;
 
     /**
      * The aliases for the parameter.
@@ -29,10 +29,10 @@ class ParameterClosure
     public $aliases = [];
 
     /**
-     * The parent ParameterClosure if this object is registered
-     * as an alias ParameterClosure object.
+     * The parent Parameter if this object is registered
+     * as an alias Parameter object.
      *
-     * @var ParameterClosure
+     * @var Parameter
      */
     public $parent;
 
@@ -57,27 +57,25 @@ class ParameterClosure
     public $required = false;
 
     /**
-     * Construct the ParameterClosure with a name and closure.
+     * Construct the Parameter with a name and closure.
      *
      * @param string  $prefix
-     * @param string  $parameterName
-     * @param Closure $parameterClosure
+     * @param string  $name
+     * @param Closure $closure
      * @param bool    $required
      */
     public function __construct(
         $prefix,
-        $parameterName,
-        Closure $parameterClosure,
-        $required = false
+        $name,
+        Closure $closure
     ) {
-        $this->parameterName = $parameterName;
-        $this->parameterClosure = $parameterClosure;
+        $this->name = $name;
+        $this->closure = $closure;
         $this->prefix = $prefix;
-        $this->required = $required;
     }
 
     /**
-     * Gets the usage of the ParameterClosure as string.
+     * Gets the usage of the Parameter as string.
      *
      * @param bool $withEncapsulation
      * @param bool $withAliases
@@ -92,7 +90,7 @@ class ParameterClosure
         }
         $aliases = ($withAliases ? $this->getAliasUsage() : '');
 
-        $usage .= $this->prefix.$this->parameterName.$aliases.' ';
+        $usage .= $this->prefix.$this->name.$aliases.' ';
 
         $usage .= $this->getPropertiesAsString();
 
@@ -108,7 +106,7 @@ class ParameterClosure
     {
         $result = '';
 
-        $rFunction = new ReflectionFunction($this->parameterClosure);
+        $rFunction = new ReflectionFunction($this->closure);
         if ($rFunction->isVariadic()) {
             $result .= '<'.
             $rFunction->getParameters()[0]->getName().', ...>';
@@ -134,7 +132,7 @@ class ParameterClosure
 
         foreach ($this->aliases as $prefix => $alias) {
             if ($withEncapsulation) {
-                $aliases = ($aliases == '') ? ' (' : $aliases;
+                $aliases = ($aliases == '') ? ' (' : $aliases.',';
                 $aliases .= ' '.$prefix.$alias;
             } else {
                 $aliases = ($aliases == '') ? $prefix.$alias : $aliases.', '.$prefix.$alias;
@@ -149,13 +147,17 @@ class ParameterClosure
     }
 
     /**
-     * Set the description for the ParameterParser.
+     * Set the description for the Parameter.
      *
      * @param string $description
+     *
+     * @return \Parameters\Parameter
      */
     public function setDescription($description)
     {
         $this->description = $description;
+
+        return $this;
     }
 
     /**
@@ -165,20 +167,38 @@ class ParameterClosure
      *
      * Only one alias can exist per prefix per parameter.
      *
-     * @param string $parameterName
+     * @param string $name
      * @param string $prefix
+     *
+     * @return \Parameters\Parameter
      */
-    public function addAlias($parameterName, $prefix = null)
+    public function addAlias($name, $prefix = null)
     {
         if ($prefix == null) {
-            $this->aliases[$this->prefix] = $parameterName;
+            $this->aliases[$this->prefix] = $name;
         } else {
-            $this->aliases[$prefix] = $parameterName;
+            $this->aliases[$prefix] = $name;
         }
+
+        return $this;
     }
 
     /**
-     * Return true if this object is a Parent ParameterClosure.
+     * Set the Required value.
+     *
+     * @param bool $value
+     *
+     * @return \Parameters\Parameter
+     */
+    public function setRequired(bool $value)
+    {
+        $this->required = $value;
+
+        return $this;
+    }
+
+    /**
+     * Return true if this object is a Parent Parameter.
      *
      * @return bool
      */

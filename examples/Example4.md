@@ -1,6 +1,6 @@
 ## Index:
-* [Example 1: Using ParameterParser](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example1.md)
-* [Example 2: Using ParameterCluster](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md)
+* [Example 1: Using Parameter Parser](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example1.md)
+* [Example 2: Using a Cluster](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md)
 * [Example 3: Using Variadic Closures (...)](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example3.md)
 * Example 4: Using Aliases
 * [Example 5: Using Error Handlers](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example5.md)
@@ -24,15 +24,15 @@
     )
 #### Code:
 ```php
-// Create a new ParameterCluster.
-$parameters = new ParameterCluster();
+// Create a new Cluster.
+$parameters = new Cluster();
 
 // Create a new uniadic closure and associate it with the exec parameter.
 $execClosure = parameter('-', 'exec', function ($file) {
     return $file;
 });
 
-// Add an alias to the exec ParameterClosure using prefix '--'
+// Add an alias to the exec Parameter using prefix '--'
 // and parameter alias 'exec-with'.
 // 
 // Note: Aliases will always override regular parameters no
@@ -42,25 +42,24 @@ $execClosure = parameter('-', 'exec', function ($file) {
 // alias will use it's parent parameter's prefix.
 $execClosure->addAlias('exec-with', '--');
 
-// Add the exec ParameterClosure to the ParameterCluster.
+// Add the exec Parameter to the Cluster.
 $parameters->add($execClosure);
 
-// Create a ParameterParser using the ParameterCluster.
-$parameterParser = new ParameterParser($argv, $parameters);
+// Create a Parser using the Cluster.
+$parser = new Parser($argv, $parameters);
 
-// Parse the arguments using the ParameterCluster.
-$results = $parameterParser->parse();
+// Parse the arguments using the Cluster.
+$results = $parser->parse();
 
-// Validate the ParameterParser and if it's invalid, print the usage.
-// Note: Aliases do not currently show in ParameterCluster::getFullUsage()
-if (! $parameterParser->isValid()) {
+// Validate the Parser and if it's invalid, print the usage.
+// Note: Aliases do not currently show in Cluster::printFullUsage()
+if (! $parser->isValid()) {
     $parameters->printFullUsage(
         "Parameter Parser",
-        "Using aliases with ParameterClosures Example.",
+        "Using aliases with Parameter Example.",
         "v0.0.1"
     );
 } else {
     print_r($results);
 }
-
 ```

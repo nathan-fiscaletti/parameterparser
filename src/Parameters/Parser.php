@@ -1,11 +1,11 @@
 <?php
 
-namespace ParameterParser;
+namespace Parameters;
 
 use Closure;
 use ReflectionFunction;
 
-class ParameterParser
+class Parser
 {
     /**
      * The constant value that is used to halt the parser.
@@ -24,7 +24,7 @@ class ParameterParser
      *
      * @var array
      */
-    private $parameterCluster = null;
+    private $cluster = null;
 
     /**
      * The validity of the parsed parameters.
@@ -52,41 +52,35 @@ class ParameterParser
      * Construct the Parameter Parser using an array of arguments.
      *
      * @param array            $argv
-     * @param ParameterCluster $prefixes
+     * @param Cluster $prefixes
      */
     public function __construct(
         $argv = null,
-        ParameterCluster $parameterCluster = null
+        Cluster $cluster = null
     ) {
-        $this->parameterCluster = new ParameterCluster();
-        $this->errorHandler = function (
-            ParameterClosure $parameterClosure,
-            $errorMessage
-        ) {
-            // Empty Error Handler
-        };
-        $this->initialize($argv, $parameterCluster);
+        $this->cluster = new Cluster();
+        $this->initialize($argv, $cluster);
     }
 
     /**
      * Parse the arguments.
      *
-     * @param array            $argv
-     * @param ParameterCluster $parameterCluster
+     * @param array   $argv
+     * @param Cluster $cluster
      *
      * @return array
      */
     public function parse(
         $argv = null,
-        ParameterCluster $parameterCluster = null
+        Cluster $cluster = null
     ) {
-        $this->initialize($argv, $parameterCluster);
+        $this->initialize($argv, $cluster);
 
         return $this->checkValidityAndContinueParse();
     }
 
     /**
-     * Sets an error handler for the ParameterParser.
+     * Sets an error handler for the Parser.
      *
      * @param Closure $closure
      */
@@ -102,7 +96,7 @@ class ParameterParser
      */
     public function setDefault(Closure $closure)
     {
-        $this->parameterCluster->setDefault($closure);
+        $this->cluster->setDefault($closure);
     }
 
     /**
@@ -120,7 +114,7 @@ class ParameterParser
      * of the parser, if any. If the parser was not halted
      * null will be returned.
      *
-     * @return \ParameterParser\ParameterClosure
+     * @return \Parameters\Parameter
      */
     public function haltedBy()
     {
@@ -132,13 +126,13 @@ class ParameterParser
      * of the parser, if any. If the parser was not halted
      * null will be returned.
      *
-     * @return \ParameterParser\ParameterClosure
+     * @return \Parameters\Parameter
      */
     public function haltedByName()
     {
         return ($this->haltedBy == null)
             ? null
-            : $this->haltedBy->parameterName;
+            : $this->haltedBy->name;
     }
 
     /**
@@ -151,11 +145,19 @@ class ParameterParser
     {
         $valid = $this->validateRequiredParameters();
         if ($valid !== true) {
-            $this->errorHandler->call(
-                $this,
+            $error = new ParseException(
                 $valid,
-                'Missing required argument: '.$valid->parameterName
+                'Missing required argument: '.$valid->name,
+                ParseException::MISSING_REQUIRED_ARGUMENT
             );
+            if ($this->errorHandler != null) {
+                $this->errorHandler->call(
+                    $this,
+                    $error
+                );
+            } else {
+                throw $error;
+            }
             $this->valid = false;
 
             return [];
@@ -200,7 +202,6 @@ class ParameterParser
     {
         if ($this->prefixExists($parameter)) {
             $closure = $this->getClosure($parameter);
-
             if ($closure != null) {
                 $prefix = $this->getPrefix($parameter);
                 $closure_arguments = [];
@@ -227,18 +228,18 @@ class ParameterParser
                 }
 
                 $result_key = $this->getRealName($parameter);
-                $result = $results[$result_key];
+                $result = @$results[$result_key];
 
-                if (! $result instanceof ParameterResult) {
-                    if ($result == self::HALT_PARSE) {
-                        $this->haltedBy = $this->getParameterClosure($parameter);
+                if (! $result instanceof Result) {
+                    if ($result === self::HALT_PARSE) {
+                        $this->haltedBy = $this->getParameter($parameter);
                         unset($results[$result_key]);
 
                         return false;
                     }
                 } else {
                     if ($result->shouldHalt()) {
-                        $this->haltedBy = $this->getParameterClosure($parameter);
+                        $this->haltedBy = $this->getParameter($parameter);
                         if ($result->isHaltOnly()) {
                             unset($results[$result_key]);
                         } else {
@@ -260,7 +261,7 @@ class ParameterParser
 
     /**
      * Validates the parameter list by verifying that it contains
-     * all required parameters. Returns the ParameterClosure if a parameter
+     * all required parameters. Returns the Parameter if a parameter
      * is missing, else it will return true.
      *
      * @return mixed
@@ -268,25 +269,25 @@ class ParameterParser
     private function validateRequiredParameters()
     {
         $ret = true;
-        foreach ($this->parameterCluster->prefixes as $prefix => $parameters) {
-            foreach ($parameters as $parameterClosure) {
-                if ($parameterClosure->required) {
+        foreach ($this->cluster->prefixes as $prefix => $parameters) {
+            foreach ($parameters as $parameterObj) {
+                if ($parameterObj->required) {
                     if (! in_array(
-                        $parameterClosure
+                        $parameterObj
                         ->prefix.
-                        $parameterClosure
-                        ->parameterName,
+                        $parameterObj
+                        ->name,
                         $this->argv
                     )) {
                         $aliasFound = false;
-                        foreach ($parameterClosure->aliases as $prefix => $alias) {
+                        foreach ($parameterObj->aliases as $prefix => $alias) {
                             if (in_array($prefix.$alias, $this->argv)) {
                                 $aliasFound = true;
                                 break;
                             }
                         }
                         if (! $aliasFound) {
-                            $ret = $parameterClosure;
+                            $ret = $parameterObj;
                             break 2;
                         }
                     }
@@ -298,17 +299,17 @@ class ParameterParser
     }
 
     /**
-     * Initialize the ParameterParser with new data.
+     * Initialize the Parser with new data.
      *
-     * @param  array            $argv
-     * @param  ParameterCluster $parameterCluster
+     * @param  array   $argv
+     * @param  Cluster $cluster
      */
-    private function initialize($argv, $parameterCluster)
+    private function initialize($argv, $cluster)
     {
         $this->valid = true;
         $this->haltedBy = null;
-        if ($parameterCluster != null) {
-            $this->parameterCluster = $parameterCluster;
+        if ($cluster != null) {
+            $this->cluster = $cluster;
             if ($argv != null) {
                 $this->preloadAliases($argv);
             }
@@ -330,7 +331,7 @@ class ParameterParser
      */
     private function respondDefault(&$i, &$results, $parameter)
     {
-        $defaultResult = $this->parameterCluster->default->call(
+        $defaultResult = $this->cluster->default->call(
             $this, $parameter
         );
 
@@ -343,22 +344,22 @@ class ParameterParser
     }
 
     /**
-     * Preload alias ParameterClosures into the system.
+     * Preload alias Parameters into the system.
      */
     private function preloadAliases()
     {
-        foreach (array_keys($this->parameterCluster->prefixes) as $prefix) {
+        foreach (array_keys($this->cluster->prefixes) as $prefix) {
             foreach (
-                $this->parameterCluster->prefixes[$prefix] as $parameterClosure
+                $this->cluster->prefixes[$prefix] as $parameterObj
             ) {
-                foreach ($parameterClosure->aliases as $prefix => $alias) {
-                    $aliasClosure = new ParameterClosure(
+                foreach ($parameterObj->aliases as $prefix => $alias) {
+                    $aliasClosure = new Parameter(
                         $prefix,
                         $alias,
-                        $parameterClosure->parameterClosure
+                        $parameterObj->closure
                     );
-                    $aliasClosure->parent = $parameterClosure;
-                    $this->parameterCluster->add(
+                    $aliasClosure->parent = $parameterObj;
+                    $this->cluster->add(
                         $aliasClosure
                     );
                 }
@@ -464,20 +465,27 @@ class ParameterParser
             $current_argument += 1;
             $i++;
         }
-        $parameterClosure = $this->getParameterClosure($parameter);
-        if ($parameterClosure->parent != null) {
+
+        $parameterObj = $this->getParameter($parameter);
+        if ($parameterObj->parent != null) {
             if (count($closure_arguments) == $argument_count) {
                 $results[
-                    $parameterClosure->parent->parameterName
+                    $parameterObj->parent->name
                 ] = $closure(...$closure_arguments);
             } else {
                 $this->valid = false;
+                $error = new ParseException(
+                    $parameterObj,
+                    'Invalid argument count. Expecting '.$argument_count.' but recieved '.count($closure_arguments).'.',
+                    ParseException::INVALID_ARGUMENT_COUNT_ALIAS
+                );
                 if ($this->errorHandler != null) {
                     $this->errorHandler->call(
                         $this,
-                        $parameterClosure,
-                        'Invalid argument count for parameter closure.'
+                        $error
                     );
+                } else {
+                    throw $error;
                 }
             }
         } else {
@@ -491,12 +499,18 @@ class ParameterParser
                 ] = $closure(...$closure_arguments);
             } else {
                 $this->valid = false;
+                $error = new ParseException(
+                    $parameterObj,
+                    'Invalid argument count. Expecting '.$argument_count.' but recieved '.count($closure_arguments).'.',
+                    ParseException::INVALID_ARGUMENT_COUNT_PARAMETER
+                );
                 if ($this->errorHandler != null) {
                     $this->errorHandler->call(
                         $this,
-                        $parameterClosure,
-                        'Invalid argument count for parameter closure.'
+                        $error
                     );
+                } else {
+                    throw $error;
                 }
             }
         }
@@ -532,20 +546,27 @@ class ParameterParser
             $closure_arguments[] = $argument;
             $i++;
         }
-        $parameterClosure = $this->getParameterClosure($parameter);
-        if ($parameterClosure->parent != null) {
+        $parameterObj = $this->getParameter($parameter);
+        if ($parameterObj->parent != null) {
             if (count($closure_arguments) > 0) {
                 $results[
-                    $parameterClosure->parent->parameterName
+                    $parameterObj->parent->name
                 ] = $closure(...$closure_arguments);
             } else {
                 $this->valid = false;
+                $error = new ParseException(
+                    $parameterObj,
+                    'Invalid argument count. Expecting 1+ but recieved '.count($closure_arguments).'.',
+                    ParseException::INVALID_ARGUMENT_COUNT_VARIADIC_ALIAS
+                );
+
                 if ($this->errorHandler != null) {
                     $this->errorHandler->call(
                         $this,
-                        $parameterClosure,
-                        'Missing argument for parameter closure.'
+                        $error
                     );
+                } else {
+                    throw $error;
                 }
             }
         } else {
@@ -559,12 +580,19 @@ class ParameterParser
                 ] = $closure(...$closure_arguments);
             } else {
                 $this->valid = false;
+                $error = new ParseException(
+                    $parameterObj,
+                    'Invalid argument count. Expecting 1+ but recieved '.count($closure_arguments).'.',
+                    ParseException::INVALID_ARGUMENT_COUNT_VARIADIC_PARAMETER
+                );
+
                 if ($this->errorHandler != null) {
                     $this->errorHandler->call(
                         $this,
-                        $parameterClosure,
-                        'Missing argument for parameter closure.'
+                        $error
                     );
+                } else {
+                    throw $error;
                 }
             }
         }
@@ -579,37 +607,7 @@ class ParameterParser
      */
     private function prefixExists($parameter)
     {
-        $prefixExists = false;
-
-        foreach (array_keys($this->parameterCluster->prefixes) as $prefix) {
-            if (substr($parameter, 0, strlen($prefix)) == $prefix) {
-                $prefixExists = true;
-                break;
-            }
-        }
-
-        return $prefixExists;
-    }
-
-    /**
-     * Attempts to find the prefix associated with the parameter.
-     * If no prefix is found, null will be returned.
-     *
-     * @param string $parameter
-     *
-     * @return string
-     */
-    private function getPrefix($parameter)
-    {
-        $prefix = null;
-
-        foreach (array_keys($this->parameterCluster->prefixes) as $_prefix) {
-            if (substr($parameter, 0, strlen($_prefix)) == $_prefix) {
-                $prefix = $_prefix;
-            }
-        }
-
-        return $prefix;
+        return $this->getPrefix($parameter) != null;
     }
 
     /**
@@ -620,11 +618,11 @@ class ParameterParser
      */
     private function getRealName($param)
     {
-        $parameterClosure = $this->getParameterClosure($param);
-        if ($parameterClosure->parent != null) {
-            return $parameterClosure->parent->parameterName;
+        $parameterObj = $this->getParameter($param);
+        if ($parameterObj->parent != null) {
+            return $parameterObj->parent->name;
         } else {
-            return $parameterClosure->parameterName;
+            return $parameterObj->name;
         }
     }
 
@@ -638,47 +636,76 @@ class ParameterParser
      */
     private function getClosure($parameter)
     {
-        $closure = null;
+        $closure = $this->getParameter($parameter);
 
-        foreach (array_keys($this->parameterCluster->prefixes) as $prefix) {
-            if (substr($parameter, 0, strlen($prefix)) == $prefix) {
-                @$closure = $this->parameterCluster->prefixes[$prefix][
-                    substr(
-                        $parameter,
-                        strlen($prefix),
-                        strlen($parameter) - strlen($prefix)
-                    )
-                ]->parameterClosure;
-            }
-        }
-
-        return $closure;
+        return ! is_null($closure) ? $closure->closure : null;
     }
 
     /**
-     * Get the ParameterClosure object associated with a parameter.
-     * If no ParameterClosure is found for the parameter, return null.
+     * Attempts to find the prefix associated with the parameter.
+     * If no prefix is found, null will be returned.
      *
-     * @param  string $parameter
+     * @param string $parameter
      *
-     * @return ParameterClosure
+     * @return string|null
      */
-    private function getParameterClosure($parameter)
+    private function getPrefix($parameter)
     {
-        $parameterClosure = null;
+        $lastprefix = null;
 
-        foreach (array_keys($this->parameterCluster->prefixes) as $prefix) {
+        foreach (array_keys($this->cluster->prefixes) as $prefix) {
             if (substr($parameter, 0, strlen($prefix)) == $prefix) {
-                @$parameterClosure = $this->parameterCluster->prefixes[$prefix][
-                    substr(
-                        $parameter,
-                        strlen($prefix),
-                        strlen($parameter) - strlen($prefix)
-                    )
-                ];
+                if ($lastprefix == null) {
+                    $lastprefix = $prefix;
+                } else {
+                    if (strlen($lastprefix) < strlen($prefix)) {
+                        $lastprefix = $prefix;
+                    }
+                }
             }
         }
 
-        return $parameterClosure;
+        return $lastprefix;
+    }
+
+    /**
+     * Get the Parameter object associated with a parameter.
+     * If no Parameter is found for the parameter, return null.
+     *
+     * @param  string $parameter
+     *
+     * @return Parameter
+     */
+    private function getParameter($parameter)
+    {
+        $closure = null;
+        $lastprefix = null;
+        $parameter_parsed = null;
+
+        foreach (array_keys($this->cluster->prefixes) as $prefix) {
+            if (substr($parameter, 0, strlen($prefix)) == $prefix) {
+                $parameter_without_prefix = substr(
+                    $parameter,
+                    strlen($prefix),
+                    strlen($parameter) - strlen($prefix)
+                );
+
+                if ($lastprefix == null) {
+                    if (array_key_exists($parameter_without_prefix, $this->cluster->prefixes[$prefix])) {
+                        $lastprefix = $prefix;
+                        $parameter_parsed = $parameter_without_prefix;
+                    }
+                } else {
+                    if (array_key_exists($parameter_without_prefix, $this->cluster->prefixes[$prefix])) {
+                        if (strlen($lastprefix) < strlen($prefix)) {
+                            $lastprefix = $prefix;
+                            $parameter_parsed = $parameter_without_prefix;
+                        }
+                    }
+                }
+            }
+        }
+
+        return @$this->cluster->prefixes[$lastprefix][$parameter_parsed];
     }
 }

@@ -14,10 +14,10 @@
     ],
     "autoload": {
         "psr-4": {
-            "ParameterParser\\": "src/ParameterParser"
+            "Parameters\\": "src/Parameters"
         },
         "files": [
-            "src/ParameterParser/Functions.php"
+            "src/Parameters/Functions.php"
         ]
     },
     "require": {

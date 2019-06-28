@@ -1,6 +1,6 @@
 ## Index:
-* [Example 1: Using ParameterParser](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example1.md)
-* [Example 2: Using ParameterCluster](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md)
+* [Example 1: Using Parameter Parser](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example1.md)
+* [Example 2: Using a Cluster](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example2.md)
 * Example 3: Using Variadic Closures (...)
 * [Example 4: Using Aliases](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example4.md)
 * [Example 5: Using Error Handlers](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example5.md)
@@ -9,7 +9,7 @@
 * [Example 8: Printing Usage](https://github.com/nathan-fiscaletti/parameterparser/blob/master/examples/Example8.md)
 
 ----
-### Example 3 : Using ParameterCluster and the splat operator `...` (aka. Variadic Closures)
+### Example 3 : Using a Cluster and the splat operator `...` (aka. Variadic Closures)
 
 #### Usage: 
     php test.php -load 'Main Library.so' File2.so +configurewith 'Main Library.so' -exec 'Pre Load.sh' Initialize.sh start.sh
@@ -34,8 +34,8 @@
     )
 #### Code:
 ```php
-// Create a new ParameterCluster.
-$parameters = new ParameterCluster;
+// Create a new Cluster.
+$parameters = new Cluster;
 
 // Create a new variadic closures for the load and exec parameters using
 // the splat operator (...). This will allow the closure to take all
@@ -59,28 +59,27 @@ $configureWithClosure = parameter('+', 'configurewith', function ($file) {
 });
 
 
-// Use the ->addMany function to add multiple closures to the ParameterCluster.
+// Use the ->addMany function to add multiple closures to the Cluster.
 $parameters->addMany([
     $loadClosure,
     $execClosure,
     $configureWithClosure
 ]);
 
-// Create a ParameterParser using the ParameterCluster.
-$parameterParser = new ParameterParser($argv, $parameters);
+// Create a Parser using the Cluster.
+$parser = new Parser($argv, $parameters);
 
-// Parse the arguments using the ParameterCluster.
-$results = $parameterParser->parse();
+// Parse the arguments using the Cluster.
+$results = $parser->parse();
 
-// Validate the ParameterParser and if it's invalid, print the usage.
-if (! $parameterParser->isValid()) {
+// Validate the Parser and if it's invalid, print the usage.
+if (! $parser->isValid()) {
     $parameters->printFullUsage(
         "Parameter Parser",
-        "Using ParameterCluster and the splat operator `...` (aka. Variadic Closures) Example.",
+        "Using Cluster and the splat operator `...` (aka. Variadic Closures) Example.",
         "v0.0.1"
     );
 } else {
     print_r($results);
 }
-
 ```

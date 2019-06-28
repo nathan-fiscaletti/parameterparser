@@ -11,67 +11,65 @@ if (! function_exists('parameter')) {
      * Creates a new ParameterClosure.
      *
      * @param  string   $prefix
-     * @param  string   $parameterName
+     * @param  string   $name
      * @param  \Closure $closure
      * @param  bool     $required
      *
-     * @return \ParameterParser\ParameterClosure
+     * @return \Parameters\Parameter
      */
     function parameter(
         $prefix,
-        $parameterName,
-        \Closure $closure,
-        $required = false
+        $name,
+        \Closure $closure
     ) {
-        return new \ParameterParser\ParameterClosure(
+        return new \Parameters\Parameter(
             $prefix,
-            $parameterName,
-            $closure,
-            $required
+            $name,
+            $closure
         );
     }
 }
 
 if (! function_exists('parameter_result')) {
     /**
-     * Create a new ParameterResult object and return it.
+     * Create a new Result object and return it.
      *
      * @param  mixed $value
      *
-     * @return \ParameterParser\ParameterResult
+     * @return \Parameters\Result
      */
     function parameter_result($value)
     {
-        return new \ParameterParser\ParameterResult($value);
+        return new \Parameters\Result($value);
     }
 }
 
 if (! function_exists('parameter_result_and_halt')) {
     /**
-     * Create a new ParameterResult object and return it,
+     * Create a new Result object and return it,
      * once this is returned the parser will be halted.
      *
      * @param  mixed $value
      *
-     * @return \ParameterParser\ParameterResult
+     * @return \Parameters\Result
      */
     function parameter_result_and_halt($value)
     {
-        return new \ParameterParser\ParameterResult($value, true);
+        return new \Parameters\Result($value, true);
     }
 }
 
 if (! function_exists('parameter_result_halt')) {
     /**
-     * Create a new ParameterResult object that when
+     * Create a new Result object that when
      * returned will halt the parser.
      *
-     * @return \ParameterParser\ParameterResult
+     * @return \Parameters\Result
      */
     function parameter_result_halt()
     {
-        return new \ParameterParser\ParameterResult(
-            \ParameterParser\ParameterParser::HALT_PARSE,
+        return new \Parameters\Result(
+            \Parameters\Parser::HALT_PARSE,
             true
         );
     }

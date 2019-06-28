@@ -1,11 +1,11 @@
 <?php
 
-namespace ParameterParser;
+namespace Parameters;
 
 use Closure;
 use Bramus\Ansi\ControlSequences\EscapeSequences\Enums\SGR;
 
-class ParameterCluster
+class Cluster
 {
     /**
      * The prefixes and the closures associated therewith.
@@ -36,13 +36,13 @@ class ParameterCluster
     /**
      * Add a parameter closure.
      *
-     * @param ParameterClosure $closure
+     * @param Parameter $parameter
      *
-     * @return ParameterCluster
+     * @return Cluster
      */
-    public function add(ParameterClosure $closure)
+    public function add(Parameter $parameter)
     {
-        $this->prefixes[$closure->prefix][$closure->parameterName] = $closure;
+        $this->prefixes[$parameter->prefix][$parameter->name] = $parameter;
 
         return $this;
     }
@@ -51,13 +51,13 @@ class ParameterCluster
      * Remove a parameter closure based on prefix and parameter name.
      *
      * @param  string $prefix
-     * @param  string $parameterName
+     * @param  string $name
      *
-     * @return ParameterCluster
+     * @return Cluster
      */
-    public function remove($prefix, $parameterName)
+    public function remove($prefix, $name)
     {
-        unset($this->prefixes[$prefix][$parameterName]);
+        unset($this->prefixes[$prefix][$name]);
 
         return $this;
     }
@@ -68,13 +68,13 @@ class ParameterCluster
      * @param string $prefix
      * @param array  $parameters
      *
-     * @return ParameterCluster
+     * @return Cluster
      */
     public function addMany($parameters)
     {
         foreach ($parameters as $parameter) {
             $this->prefixes[$parameter->prefix][
-                $parameter->parameterName
+                $parameter->name
             ] = $parameter;
         }
 
@@ -86,7 +86,7 @@ class ParameterCluster
      *
      * @param Closure $closure
      *
-     * @return ParameterCluster
+     * @return Cluster
      */
     public function setDefault(Closure $closure)
     {
@@ -96,7 +96,7 @@ class ParameterCluster
     }
 
     /**
-     * Retrieves the full usage of the ParameterCluster as a string.
+     * Retrieves the full usage of the Cluster as a string.
      *
      * @param string $showRequiredFirst
      * @param string $customBinary
@@ -161,7 +161,7 @@ class ParameterCluster
      * @param string $customBinary
      * @param string $customScript
      * @param int    $columnPadding
-     * @param array  $fullUsageStyle
+     * @param array  $excluding
      */
     public function printFullUsage(
         $applicationName,
@@ -170,8 +170,8 @@ class ParameterCluster
         $showRequiredFirst = true,
         $customBinary = null,
         $customScript = null,
-        $columnPadding = 5,
-        $usageStyle = null
+        $columnPadding = 2,
+        $excluding = []
     ) {
         // Create Ansi Instance
         $ansi = new \Bramus\Ansi\Ansi();
@@ -207,7 +207,7 @@ class ParameterCluster
         echo PHP_EOL;
 
         $parameterCount = 0;
-        $values = $usageStyle == null ? FullUsageStyle::all() : $usageStyle;
+        $values = FullUsageStyle::allExcept($excluding, $columnPadding);
 
         foreach ($this->prefixes as $prefix => $parameters) {
             foreach ($parameters as $parameter) {
