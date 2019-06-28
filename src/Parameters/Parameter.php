@@ -132,7 +132,7 @@ class Parameter
 
         foreach ($this->aliases as $prefix => $alias) {
             if ($withEncapsulation) {
-                $aliases = ($aliases == '') ? ' (' : $aliases .',';
+                $aliases = ($aliases == '') ? ' (' : $aliases.',';
                 $aliases .= ' '.$prefix.$alias;
             } else {
                 $aliases = ($aliases == '') ? $prefix.$alias : $aliases.', '.$prefix.$alias;
@@ -150,7 +150,7 @@ class Parameter
      * Set the description for the Parameter.
      *
      * @param string $description
-     * 
+     *
      * @return \Parameters\Parameter
      */
     public function setDescription($description)
@@ -169,7 +169,7 @@ class Parameter
      *
      * @param string $name
      * @param string $prefix
-     * 
+     *
      * @return \Parameters\Parameter
      */
     public function addAlias($name, $prefix = null)
@@ -185,12 +185,13 @@ class Parameter
 
     /**
      * Set the Required value.
-     * 
+     *
      * @param bool $value
-     * 
+     *
      * @return \Parameters\Parameter
      */
-    public function setRequired(bool $value) {
+    public function setRequired(bool $value)
+    {
         $this->required = $value;
 
         return $this;

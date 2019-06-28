@@ -4,10 +4,10 @@ namespace Parameters;
 
 use \Bramus\Ansi\ControlSequences\EscapeSequences\Enums\SGR;
 
-class ParseException extends \Exception {
-
+class ParseException extends \Exception
+{
     /**
-     * Error Codes
+     * Error Codes.
      */
     const INVALID_ARGUMENT_COUNT_ALIAS = 60001;
     const INVALID_ARGUMENT_COUNT_PARAMETER = 60002;
@@ -17,7 +17,7 @@ class ParseException extends \Exception {
 
     /**
      * The parameter that caused this Parse exception.
-     * 
+     *
      * @var \Parameter
      */
     private $parameter;
@@ -33,7 +33,7 @@ class ParseException extends \Exception {
 
     /**
      * Convert this Exception to an ANSI String.
-     * 
+     *
      * @return string
      */
     public function toAnsiString()
@@ -49,7 +49,7 @@ class ParseException extends \Exception {
              ->color([SGR::COLOR_FG_WHITE])
              ->text('] (parameter: ')
              ->color([SGR::COLOR_FG_YELLOW])
-             ->text(($this->parameter != null?$this->parameter->name:'UNKNOWN'))
+             ->text(($this->parameter != null ? $this->parameter->name : 'UNKNOWN'))
              ->color([SGR::COLOR_FG_WHITE])
              ->text(') : ')
              ->color([SGR::COLOR_FG_RED])
@@ -61,11 +61,11 @@ class ParseException extends \Exception {
 
     /**
      * Convert this Exception to a string.
-     * 
+     *
      * @return string
      */
     public function __toString()
     {
-        return __CLASS__.': ['.$this->code.'] (parameter: '.($this->parameter != null?$this->parameter->name:'UNKNOWN').') : '.$this->message.PHP_EOL;
+        return __CLASS__.': ['.$this->code.'] (parameter: '.($this->parameter != null ? $this->parameter->name : 'UNKNOWN').') : '.$this->message.PHP_EOL;
     }
 }

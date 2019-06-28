@@ -75,7 +75,6 @@ class Parser
         Cluster $cluster = null
     ) {
         $this->initialize($argv, $cluster);
-        
 
         return $this->checkValidityAndContinueParse();
     }
@@ -154,7 +153,7 @@ class Parser
             if ($this->errorHandler != null) {
                 $this->errorHandler->call(
                     $this,
-                    $error  
+                    $error
                 );
             } else {
                 throw $error;
@@ -466,7 +465,7 @@ class Parser
             $current_argument += 1;
             $i++;
         }
-        
+
         $parameterObj = $this->getParameter($parameter);
         if ($parameterObj->parent != null) {
             if (count($closure_arguments) == $argument_count) {
@@ -483,7 +482,7 @@ class Parser
                 if ($this->errorHandler != null) {
                     $this->errorHandler->call(
                         $this,
-                        $error  
+                        $error
                     );
                 } else {
                     throw $error;
@@ -508,7 +507,7 @@ class Parser
                 if ($this->errorHandler != null) {
                     $this->errorHandler->call(
                         $this,
-                        $error  
+                        $error
                     );
                 } else {
                     throw $error;
@@ -564,7 +563,7 @@ class Parser
                 if ($this->errorHandler != null) {
                     $this->errorHandler->call(
                         $this,
-                        $error  
+                        $error
                     );
                 } else {
                     throw $error;
@@ -590,7 +589,7 @@ class Parser
                 if ($this->errorHandler != null) {
                     $this->errorHandler->call(
                         $this,
-                        $error  
+                        $error
                     );
                 } else {
                     throw $error;
@@ -644,9 +643,9 @@ class Parser
     /**
      * Attempts to find the prefix associated with the parameter.
      * If no prefix is found, null will be returned.
-     * 
+     *
      * @param string $parameter
-     * 
+     *
      * @return string|null
      */
     private function getPrefix($parameter)

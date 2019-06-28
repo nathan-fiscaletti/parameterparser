@@ -10,7 +10,7 @@ class FullUsageStyle
      * full usage output.
      *
      * @param int $columnPadding
-     * 
+     *
      * @return array
      */
     public static function all($columnPadding)
