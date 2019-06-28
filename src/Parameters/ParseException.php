@@ -2,7 +2,7 @@
 
 namespace Parameters;
 
-use \Bramus\Ansi\ControlSequences\EscapeSequences\Enums\SGR;
+use Bramus\Ansi\ControlSequences\EscapeSequences\Enums\SGR;
 
 class ParseException extends \Exception
 {

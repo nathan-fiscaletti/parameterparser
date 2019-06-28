@@ -637,6 +637,7 @@ class Parser
     private function getClosure($parameter)
     {
         $closure = $this->getParameter($parameter);
+
         return ! is_null($closure) ? $closure->closure : null;
     }
 
