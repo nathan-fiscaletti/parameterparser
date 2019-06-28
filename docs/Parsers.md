@@ -12,7 +12,7 @@ To create a Parser use the following
 $parser = new Parser($argv, $parameters);
 ```
 
-Where `$argv` is your array of strings to be parsed, and `$parameters` is your instance of [`\Parameters\Cluster`](../src/Parameters/Cluster.php) (see [Clusters](./Clusters.md))/
+Where `$argv` is your array of strings to be parsed, and `$parameters` is your instance of [`\Parameters\Cluster`](../src/Parameters/Cluster.php) (see [Clusters](./Clusters.md))
 
 ## Executing the Parser
 
